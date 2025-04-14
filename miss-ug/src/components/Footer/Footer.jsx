@@ -1,18 +1,6 @@
 import React, { useState } from "react";
 import './Footer.css';
-import {
-  FaFacebookF,
-  FaInstagram,
-  FaTwitter,
-  FaCcVisa,
-  FaCcMastercard,
-  FaCcAmex,
-  FaCcDiscover,
-  FaCcPaypal,
-  FaApplePay,
-  FaGooglePay,
-  FaBitcoin,
-} from "react-icons/fa";
+import { FaFacebookF, FaInstagram, FaTwitter, FaCcVisa, FaCcMastercard, FaCcAmex, FaCcDiscover, FaCcPaypal, FaApplePay, FaGooglePay, FaBitcoin } from "react-icons/fa";
 import { SiAlipay, SiDinersclub, SiJcb } from "react-icons/si";
 import { MdSecurity } from "react-icons/md";
 
