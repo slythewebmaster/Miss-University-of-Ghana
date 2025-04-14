@@ -32,12 +32,12 @@ const App = () => {
           path="/"
           element={
             <>
-              <Hero />
-              <About />
-              <Highlight />
-              <Register />
-              <ContactUs />
-              <Footer />
+          <div id="Hero"><Hero /></div>
+          <div id="About"><About /></div>
+          <div id="Highlight"><Highlight /></div>
+          <div id="Register"><Register /></div>
+          <div id="Contact"><ContactUs /></div>
+          <Footer />
             </>
           }
         />
