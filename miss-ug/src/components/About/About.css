@@ -1,107 +1,88 @@
-.about-container {
-  padding: 100px 40px 60px;
-  background: url('../../assets/img2.jpg') no-repeat center center/cover;
-  background-size: cover; /* Ensure the background image covers the area */
-  color: #fff;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-}
-
-.about-container h1 {
-  font-size: 3.5rem;
-  color: #0e0e0e;
-  transition: color 0.3s ease; /* Smooth transition for title color */
-}
-
-.about-container h1:hover {
-  color: #ff1bbd; /* Change color on hover for some emphasis */
-}
-
-.about-container h2 {
-  font-size: 2.8rem;
-  color: #ff1bbd;
-  margin-bottom: 40px;
-}
-
-.about-section {
-  margin-bottom: 40px;
-  text-align: left;
-  max-width: 900px;
-  margin: 0 auto;
-}
-
-.about-section h3 {
-  color: #222;
-  margin-bottom: 10px;
-}
-
-.about-section ul {
-  padding-left: 20px;
-  list-style: square;
-}
-
-.about-images {
+.about-hero {
   display: flex;
-  gap: 20px;
-  justify-content: center;
-  flex-wrap: wrap;
-  margin-top: 40px;
-}
-
-.image-wrapper {
-  position: relative;
-}
-
-/* 3D effect for images */
-.about-images img {
-  width: 280px;
-  height: auto;
-  border-radius: 20px;
-  object-fit: cover;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Transition for scale and shadow */
-}
-
-.about-images img:hover {
-  transform: scale(1.05) rotate(5deg); /* Pop-out effect */
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); /* Enhance shadow for 3D depth */
-}
-
-/* Optional: Styling for text when hovering over images */
-.image-caption {
-  position: absolute;
-  bottom: 10px;
-  left: 0;
-  right: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #0a1a2f;
+  padding: 80px 40px;
   color: #fff;
-  padding: 10px;
-  text-align: center;
-  opacity: 0;
-  transform: translateY(30px);
+  gap: 40px;
+  flex-wrap: wrap;
 }
 
-.about-container h1:hover, .about-container h2:hover {
-  text-shadow: 0 4px 10px rgba(255, 27, 189, 0.8); /* Apply text-shadow for hover effect */
+.about-text {
+  flex: 1;
+  max-width: 600px;
 }
 
-/* Media Query for smaller screens */
-@media (max-width: 768px) {
-  .about-container h1 {
-    font-size: 2.5rem;
+.about-text h3 {
+  font-style: italic;
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  color: #f4f4f4;
+}
+
+.about-text h1 {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  line-height: 1.3;
+}
+
+.highlight-blue {
+  color: #00e1e1;
+}
+
+.about-text p {
+  font-size: 1.1rem;
+  color: #dcdcdc;
+  margin-bottom: 30px;
+}
+
+.explore-btn {
+  background: transparent;
+  border: 1px solid #00e1e1;
+  color: #00e1e1;
+  padding: 10px 20px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.explore-btn:hover {
+  background-color: #00e1e1;
+  color: #0a1a2f;
+}
+
+.about-images-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.about-images-column img {
+  width: 100%;
+  max-height: 250px;
+  object-fit: cover;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .about-hero {
+    flex-direction: column;
   }
 
-  .about-container h2 {
-    font-size: 2rem;
+  .about-images-column {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
   }
 
-  .about-images {
-    gap: 10px;
-  }
-
-  .about-images img {
-    width: 100%;
-    height: auto;
+  .about-images-column img {
+    width: 45%;
   }
 }
