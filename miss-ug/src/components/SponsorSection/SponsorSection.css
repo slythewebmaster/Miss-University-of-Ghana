@@ -1,0 +1,97 @@
+.sponsor-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 80px 60px;
+    background-color: #ffffff;
+    flex-wrap: wrap;
+  }
+  
+  .sponsor-left {
+    flex: 1;
+    min-width: 300px;
+  }
+  
+  .sponsor-heading {
+    font-size: 1.5rem;
+    font-style: italic;
+    font-weight: 500;
+    color: #0c0c0c;
+    margin-bottom: 10px;
+  }
+  
+  .sponsor-tagline {
+    font-size: 2.8rem;
+    font-weight: bold;
+    color: #c7a546;
+    line-height: 1.2;
+  }
+  
+  .sponsor-right {
+    flex: 1;
+    min-width: 300px;
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 20px;
+  }
+  
+  .sponsor-text {
+    font-size: 1rem;
+    color: #1e1e1e;
+    max-width: 350px;
+  }
+  
+  .sponsor-buttons {
+    display: flex;
+    gap: 20px;
+  }
+  
+  .view-all-btn {
+    background: none;
+    border: none;
+    color: #1e1e1e;
+    font-weight: 600;
+    font-size: 1rem;
+    border-bottom: 1px solid #c7a546;
+    cursor: pointer;
+    padding-bottom: 2px;
+    transition: color 0.3s ease;
+  }
+  
+  .view-all-btn:hover {
+    color: #c7a546;
+  }
+  
+  .become-btn {
+    border: 1px solid #c7a546;
+    background-color: transparent;
+    color: #1e1e1e;
+    font-weight: 600;
+    font-size: 1rem;
+    border-radius: 999px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .become-btn:hover {
+    background-color: #c7a546;
+    color: white;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .sponsor-section {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 40px;
+    }
+  
+    .sponsor-right {
+      text-align: left;
+      align-items: flex-start;
+    }
+  }
+  

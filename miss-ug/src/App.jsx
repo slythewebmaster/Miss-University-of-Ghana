@@ -9,6 +9,7 @@ import Navbar from './components/Navbar/Navbar';
 import Hero from './components/Hero/Hero';
 import About from './components/About/About';
 import Register from './components/Register/register';
+import SponsorSection from './components/SponsorSection/Sponsorsection';
 import ContactUs from './components/Contact/Contact';
 import Highlight from './components/Highlight/Highlight';
 import Footer from './components/Footer/Footer';
