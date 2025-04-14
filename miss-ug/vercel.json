@@ -1,14 +1,5 @@
 {
   "rewrites": [
-    {
-      "source": "/admin/:match*",
-      "destination": "/admin/index.html"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/admin",
-      "dest": "/admin/index.html"
-    }
+    { "source": "/admin/:match*", "destination": "/admin/index.html" }
   ]
 }
