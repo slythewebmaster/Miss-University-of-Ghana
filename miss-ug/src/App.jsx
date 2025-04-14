@@ -14,6 +14,7 @@ import Highlight from './components/Highlight/Highlight';
 import Footer from './components/Footer/Footer';
 import AdminLogin from './components/AdminLogin/AdminLogin';
 import AdminDashboard from './components/AdminDashboard/AdminDashboard';
+import { SiVercel } from 'react-icons/si';
 
 const App = () => {
   const [user, setUser] = useState(null);

@@ -14,7 +14,7 @@ const Hero = () => {
       >
         <h1 className="hero-title">Welcome to Miss University of Ghana</h1>
         <p className="hero-subtitle">Celebrating Beauty, Intelligence & Culture</p>
-        <p className="hero-subtitle">📅 Audition Date: 20th June 2025</p>
+        <p className="hero-subtitle">📅 Audition Date: 14th June 2025</p>
         <p className="hero-subtitle">📍 Venue: University of Ghana</p>
         <a href="#Register" className="btn">Register Now</a>
       </motion.div>
