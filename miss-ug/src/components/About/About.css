@@ -1,0 +1,107 @@
+.about-container {
+  padding: 100px 40px 60px;
+  background: url('../../assets/img2.jpg') no-repeat center center/cover;
+  background-size: cover; /* Ensure the background image covers the area */
+  color: #fff;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.about-container h1 {
+  font-size: 3.5rem;
+  color: #0e0e0e;
+  transition: color 0.3s ease; /* Smooth transition for title color */
+}
+
+.about-container h1:hover {
+  color: #ff1bbd; /* Change color on hover for some emphasis */
+}
+
+.about-container h2 {
+  font-size: 2.8rem;
+  color: #ff1bbd;
+  margin-bottom: 40px;
+}
+
+.about-section {
+  margin-bottom: 40px;
+  text-align: left;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.about-section h3 {
+  color: #222;
+  margin-bottom: 10px;
+}
+
+.about-section ul {
+  padding-left: 20px;
+  list-style: square;
+}
+
+.about-images {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 40px;
+}
+
+.image-wrapper {
+  position: relative;
+}
+
+/* 3D effect for images */
+.about-images img {
+  width: 280px;
+  height: auto;
+  border-radius: 20px;
+  object-fit: cover;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Transition for scale and shadow */
+}
+
+.about-images img:hover {
+  transform: scale(1.05) rotate(5deg); /* Pop-out effect */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); /* Enhance shadow for 3D depth */
+}
+
+/* Optional: Styling for text when hovering over images */
+.image-caption {
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  padding: 10px;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.about-container h1:hover, .about-container h2:hover {
+  text-shadow: 0 4px 10px rgba(255, 27, 189, 0.8); /* Apply text-shadow for hover effect */
+}
+
+/* Media Query for smaller screens */
+@media (max-width: 768px) {
+  .about-container h1 {
+    font-size: 2.5rem;
+  }
+
+  .about-container h2 {
+    font-size: 2rem;
+  }
+
+  .about-images {
+    gap: 10px;
+  }
+
+  .about-images img {
+    width: 100%;
+    height: auto;
+  }
+}

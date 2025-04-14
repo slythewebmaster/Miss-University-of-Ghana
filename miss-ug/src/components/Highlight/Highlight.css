@@ -1,0 +1,33 @@
+.highlight-section {
+    padding: 80px 20px;
+    background: #f9f9f9;
+    text-align: center;
+  }
+  
+  .highlight-section h2 {
+    font-size: 2rem;
+    color: #0e0e0e;
+    margin-bottom: 40px;
+  }
+
+  .highlight-grid {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+  }
+
+  .highlight-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 30px;
+    width: 250px;
+    font-weight: 500;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    transition: 0.3s ease;
+  }
+
+  .highlight-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  }
