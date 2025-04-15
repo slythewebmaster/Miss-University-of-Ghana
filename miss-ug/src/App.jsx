@@ -10,7 +10,7 @@ import Hero from './components/Hero/Hero';
 import LegacySection from './components/LegacySection/LegacySection';
 import About from './components/About/About';
 import Register from './components/Register/register';
-import SponsorSection from './components/SponsorSection/Sponsorsection';
+import SponsorSection from './components/SponsorSection/SponsorSection';
 import BecomePartner from './components/BecomePartner/BecomePartner';
 import ContactUs from './components/Contact/Contact';
 import Highlight from './components/Highlight/Highlight';
