@@ -1,12 +1,34 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import './Navbar.css';
 import logo from '../../assets/Logo_1.png';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('');
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const toggleMenu = () => setIsOpen(!isOpen);
+
+  const scrollToSection = (id) => {
+    const section = document.getElementById(id);
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const handleNavClick = (id) => {
+    setIsOpen(false);
+
+    if (location.pathname !== '/') {
+      // Navigate to home and wait, then scroll
+      navigate('/');
+      setTimeout(() => scrollToSection(id), 300);
+    } else {
+      scrollToSection(id);
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -22,6 +44,7 @@ const Navbar = () => {
         }
       }
     };
+
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -38,21 +61,22 @@ const Navbar = () => {
     <nav className="navbar">
       <div className="container">
         <img src={logo} alt="Logo" className="logo" />
+
         <div className={`nav-toggle ${isOpen ? 'open' : ''}`} onClick={toggleMenu}>
           <span />
           <span />
           <span />
         </div>
+
         <ul className={`nav-links ${isOpen ? 'show' : ''}`}>
           {navItems.map(({ id, label }) => (
             <li key={id}>
-              <a
-                href={`#${id}`}
+              <button
                 className={activeSection === id ? 'active' : ''}
-                onClick={() => setIsOpen(false)}
+                onClick={() => handleNavClick(id)}
               >
                 {label}
-              </a>
+              </button>
             </li>
           ))}
           <li>
