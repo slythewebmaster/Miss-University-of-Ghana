@@ -10,7 +10,7 @@ const Navbar = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ['Hero', 'About', 'Highlight', 'Register', 'Contact'];
+      const sections = ['Hero', 'Legacy', 'About', 'Register', 'Contact'];
       for (let id of sections) {
         const el = document.getElementById(id);
         if (el) {
@@ -26,6 +26,14 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const navItems = [
+    { id: 'Hero', label: 'Home' },
+    { id: 'Legacy', label: 'Legacy' },
+    { id: 'About', label: 'About' },
+    { id: 'Register', label: 'Register' },
+    { id: 'Contact', label: 'Contact Us' }
+  ];
+
   return (
     <nav className="navbar">
       <div className="container">
@@ -36,14 +44,14 @@ const Navbar = () => {
           <span />
         </div>
         <ul className={`nav-links ${isOpen ? 'show' : ''}`}>
-          {['Hero', 'About', 'Highlight', 'Register', 'Contact'].map((item) => (
-            <li key={item}>
+          {navItems.map(({ id, label }) => (
+            <li key={id}>
               <a
-                href={`#${item}`}
-                className={activeSection === item ? 'active' : ''}
+                href={`#${id}`}
+                className={activeSection === id ? 'active' : ''}
                 onClick={() => setIsOpen(false)}
               >
-                {item === 'Hero' ? 'Home' : item.replace(/([A-Z])/g, ' $1')}
+                {label}
               </a>
             </li>
           ))}
