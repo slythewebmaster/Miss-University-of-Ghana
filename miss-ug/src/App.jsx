@@ -9,6 +9,7 @@ import Navbar from './components/Navbar/Navbar';
 import Hero from './components/Hero/Hero';
 import LegacySection from './components/LegacySection/LegacySection';
 import About from './components/About/About';
+import AboutSection from './components/AboutSection/AboutSection';
 import Register from './components/Register/register';
 import SponsorSection from './components/SponsorSection/SponsorSection';
 import BecomePartner from './components/BecomePartner/BecomePartner';
@@ -43,14 +44,15 @@ const App = () => {
           <div id="Register"><Register /></div>
           <div id="Sponsors"><SponsorSection /></div>
           <div id="Contact"><ContactUs /></div>
-          <Footer />
             </>
           }
         />
         <Route path="/admin" element={<AdminLogin />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
         <Route path="/become-a-partner" element={<BecomePartner />} />
+        <Route path="/AboutSection" element={<AboutSection />} />
       </Routes>
+      <Footer />
     </Router>
   );
 };
