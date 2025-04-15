@@ -7,9 +7,11 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import Navbar from './components/Navbar/Navbar';
 import Hero from './components/Hero/Hero';
+import LegacySection from './components/LegacySection/LegacySection';
 import About from './components/About/About';
 import Register from './components/Register/register';
 import SponsorSection from './components/SponsorSection/Sponsorsection';
+import BecomePartner from './components/BecomePartner/BecomePartner';
 import ContactUs from './components/Contact/Contact';
 import Highlight from './components/Highlight/Highlight';
 import Footer from './components/Footer/Footer';
@@ -35,9 +37,11 @@ const App = () => {
           element={
             <>
           <div id="Hero"><Hero /></div>
+          <LegacySection />
           <div id="About"><About /></div>
           <div id="Highlight"><Highlight /></div>
           <div id="Register"><Register /></div>
+          <div id="Sponsors"><SponsorSection /></div>
           <div id="Contact"><ContactUs /></div>
           <Footer />
             </>
@@ -45,6 +49,7 @@ const App = () => {
         />
         <Route path="/admin" element={<AdminLogin />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
+        <Route path="/become-a-partner" element={<BecomePartner />} />
       </Routes>
     </Router>
   );

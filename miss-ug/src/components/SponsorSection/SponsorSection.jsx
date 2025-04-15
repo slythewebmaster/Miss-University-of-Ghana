@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { Link } from 'react-router-dom';
 import "./SponsorSection.css";
 
 const SponsorSection = () => {
@@ -16,14 +17,14 @@ const SponsorSection = () => {
 
       <div className="sponsor-right">
         <p className="sponsor-text">
-          Thanks to our sponsors for supporting the activities of the 2024 MISS UNIVERSE<sup>®</sup>.
+          Thanks to our sponsors for supporting the activities of the 2025 MISS UNIVERSITY OF GHANA<sup>®</sup>.
         </p>
 
         <div className="sponsor-buttons">
           <button className="view-all-btn">VIEW ALL →</button>
-          <button className="become-btn" onClick={() => navigate("/become-a-partner")}>
-            BECOME OUR PARTNER →
-          </button>
+          <Link to="/become-a-partner">
+  <button className="become-btn">BECOME OUR PARTNER →</button>
+</Link>
         </div>
       </div>
     </section>

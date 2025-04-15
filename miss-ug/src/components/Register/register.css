@@ -3,11 +3,13 @@
   max-width: 900px;
   margin: 2rem auto;
   padding: 2.5rem;
-  background-color: #ffffff;
+  background-color: #111c27;
   border-radius: 24px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+  border: 1px solid #d4af37;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   transition: all 0.3s ease-in-out;
+  color: #ffffff;
 }
 
 /* Title */
@@ -16,7 +18,7 @@
   font-size: 2.8rem;
   margin-bottom: 2rem;
   font-weight: 800;
-  color: #222;
+  color: #d4af37;
   letter-spacing: 1px;
 }
 
@@ -30,9 +32,9 @@
 /* Label */
 .registration-form label {
   display: block;
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 600;
-  color: #333;
+  color: #d4af37;
   text-transform: uppercase;
   margin-bottom: 0.5rem;
   letter-spacing: 0.5px;
@@ -44,25 +46,26 @@
 .registration-form select {
   width: 100%;
   padding: 1rem;
-  border: 2px solid #dcdcdc;
+  border: 1px solid #d4af37;
   border-radius: 10px;
   font-size: 1rem;
   font-family: inherit;
+  background-color: #0b1822;
+  color: #fff;
   transition: border-color 0.3s, box-shadow 0.3s;
-  background-color: #fdfdfd;
 }
 
 .registration-form input:focus,
 .registration-form textarea:focus,
 .registration-form select:focus {
-  border-color: #4caf50;
-  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+  border-color: #f2c94c;
+  box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.4);
   outline: none;
 }
 
 /* Dropdown styling */
 .registration-form select {
-  background-color: #fff;
+  background-color: #0b1822;
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -83,31 +86,33 @@
 .submit-button,
 .pay-button {
   padding: 1rem 1.5rem;
-  background-color: #4caf50;
+  background-color: transparent;
   color: #fff;
-  border: none;
-  border-radius: 12px;
+  border: 1px solid #d4af37;
+  border-radius: 999px;
   font-size: 1.2rem;
   font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease, color 0.3s;
 }
 
 .submit-button:hover,
 .pay-button:hover {
-  background-color: #43a047;
+  background-color: #d4af37;
+  color: #0b1822;
   transform: translateY(-2px);
 }
 
 .submit-button:disabled,
 .pay-button:disabled {
-  background-color: #9e9e9e;
+  background-color: #666;
+  border-color: #888;
   cursor: not-allowed;
 }
 
 /* Spinner */
 .spinner {
-  border: 3px solid rgba(255, 255, 255, 0.4);
+  border: 3px solid rgba(255, 255, 255, 0.3);
   border-top: 3px solid #fff;
   border-radius: 50%;
   width: 18px;

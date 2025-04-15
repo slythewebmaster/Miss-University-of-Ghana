@@ -1,77 +1,60 @@
-import React, { useState } from "react";
+import React from "react";
 import './Footer.css';
-import { FaFacebookF, FaInstagram, FaTwitter, FaCcVisa, FaCcMastercard, FaCcAmex, FaCcDiscover, FaCcPaypal, FaApplePay, FaGooglePay, FaBitcoin } from "react-icons/fa";
-import { SiAlipay, SiDinersclub, SiJcb } from "react-icons/si";
-import { MdSecurity } from "react-icons/md";
+import { FaFacebookF, FaInstagram, FaYoutube, FaXTwitter, FaTiktok, FaThreads } from "react-icons/fa6";
 
 const Footer = () => {
-  const [email, setEmail] = useState("");
-
-  const handleSubscribe = (e) => {
-    e.preventDefault();
-    if (email.trim()) {
-      alert(`Subscribed with ${email}`);
-      setEmail("");
-    }
-  };
-
   return (
     <footer className="footer">
-      <div className="footer-content">
-
-        <h2 className="footer-logo">Miss University of Ghana</h2>
-        <p className="footer-tagline">Empowering Beauty, Brains & Boldness</p>
-
-        <div className="footer-links">
-          <a href="/" target="_blank" rel="noopener noreferrer">Home</a>
-          <a href="/register" target="_blank" rel="noopener noreferrer">Register</a>
-          <a href="/about" target="_blank" rel="noopener noreferrer">About</a>
-        </div>
-
-        <div className="footer-socials">
-          <a href="https://facebook.com" target="_blank" rel="noopener noreferrer"><FaFacebookF /></a>
-          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer"><FaInstagram /></a>
-          <a href="https://twitter.com" target="_blank" rel="noopener noreferrer"><FaTwitter /></a>
-        </div>
-
-        <div className="newsletter">
-          <h4>Join Our Newsletter</h4>
-          <form onSubmit={handleSubscribe}>
-            <input
-              type="email"
-              placeholder="Enter your email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-            <button type="submit">Subscribe</button>
-          </form>
-        </div>
-
-        <div className="payment-section">
-          <h4>Payment Options</h4>
-          <div className="payment-icons">
-            <FaCcVisa title="Visa" />
-            <FaCcMastercard title="MasterCard" />
-            <FaCcAmex title="American Express" />
-            <FaCcDiscover title="Discover" />
-            <SiDinersclub title="Diners Club" />
-            <SiJcb title="JCB" />
-            <FaBitcoin title="Bitcoin" />
-            <FaCcPaypal title="PayPal" />
-            <FaGooglePay title="Google Pay" />
-            <FaApplePay title="Apple Pay" />
-            <SiAlipay title="Alipay" />
+      <div className="footer-top">
+        <div className="footer-column logo-social">
+          <h2 className="footer-logo">MISS UNIVERSITY OF GHANA</h2>
+          <div className="footer-socials">
+            <a href="#"><FaFacebookF /></a>
+            <a href="#"><FaInstagram /></a>
+            <a href="#"><FaYoutube /></a>
+            <a href="#"><FaXTwitter /></a>
+            <a href="#"><FaTiktok /></a>
+            <a href="#"><FaThreads /></a>
           </div>
-          <p className="security-note">
-            <MdSecurity className="lock-icon" /> We protect and save your data securely
-          </p>
         </div>
 
+        <div className="footer-column">
+          <h4>Pages</h4>
+          <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Register</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+
+        <div className="footer-column">
+          <h4>Partners</h4>
+          <ul>
+            <li><a href="#">Our Sponsors</a></li>
+            <li><a href="#">Become a Partner</a></li>
+          </ul>
+        </div>
+
+        <div className="footer-column">
+          <h4>Get in touch</h4>
+          <ul>
+            <li><a href="#">Talent Appearance</a></li>
+            <li><a href="#">Titleholder and Brand Partnerships</a></li>
+            <li><a href="#">Comments or questions</a></li>
+            <li><a href="#">Travel Information</a></li>
+            <li><a href="#">Broadcast Licensing</a></li>
+          </ul>
+        </div>
       </div>
 
       <div className="footer-bottom">
-        <p>&copy; {new Date().getFullYear()} University of Ghana SRC | All Rights Reserved</p>
+        <div className="footer-policies">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Use</a>
+          <a href="#">Cookie Policy</a>
+        </div>
+        <p>&copy; 2025 MISS UNIVERSITY OF GHANA. All Rights Reserved</p>
       </div>
     </footer>
   );

@@ -1,33 +1,83 @@
-.highlight-section {
-    padding: 80px 20px;
-    background: #f9f9f9;
-    text-align: center;
-  }
-  
-  .highlight-section h2 {
-    font-size: 2rem;
-    color: #0e0e0e;
-    margin-bottom: 40px;
-  }
+.highlight-banner {
+  background-color: #050e14;
+  color: #fff;
+  padding: 100px 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-  .highlight-grid {
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-    flex-wrap: wrap;
-  }
+.highlight-content {
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 1200px;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  gap: 30px;
+}
 
-  .highlight-card {
-    background: #fff;
-    border-radius: 20px;
-    padding: 30px;
-    width: 250px;
-    font-weight: 500;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-    transition: 0.3s ease;
-  }
+.highlight-left,
+.highlight-center,
+.highlight-right {
+  flex: 1;
+  min-width: 250px;
+}
 
-  .highlight-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-  }
+.highlight-title {
+  font-family: 'Georgia', serif;
+  font-style: italic;
+  font-size: 1.5rem;
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+.highlight-main {
+  font-size: 2.8rem;
+  color: #00c4b3;
+  font-weight: 800;
+  margin-bottom: 20px;
+}
+
+.highlight-date {
+  font-size: 0.95rem;
+  color: #bbb;
+  margin-bottom: 15px;
+}
+
+.highlight-button {
+  background-color: #1d2b37;
+  color: #fff;
+  border: none;
+  padding: 10px 25px;
+  border-radius: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.highlight-button:hover {
+  background-color: #00c4b3;
+  color: #000;
+}
+
+.highlight-description {
+  font-size: 1.8rem;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.highlight-readmore {
+  display: inline-block;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #fff;
+  text-decoration: none;
+  border-bottom: 1px solid #c69a4b;
+  padding-bottom: 2px;
+  transition: color 0.3s ease;
+}
+
+.highlight-readmore:hover {
+  color: #c69a4b;
+}

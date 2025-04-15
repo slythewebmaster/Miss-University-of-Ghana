@@ -9,13 +9,10 @@ const ContactUs = () => {
 
   const handleSendMessage = () => {
     if (userMessage.trim() === "") return;
-
-    // Add user's message to chat
     const newMessages = [...chatMessages, { sender: "user", text: userMessage }];
     setChatMessages(newMessages);
     setUserMessage("");
 
-    // Simulate bot response
     setTimeout(() => {
       const botResponse = "Thank you for reaching out! We'll get back to you soon.";
       setChatMessages([...newMessages, { sender: "bot", text: botResponse }]);
@@ -23,42 +20,56 @@ const ContactUs = () => {
   };
 
   return (
-    <div className="contact-container">
-      {/* Contact Form Section */}
-      <div className="contact-form">
-        <h2>Contact Us</h2>
-        <form>
-          <label>Name:</label>
-          <input type="text" name="name" required />
-
-          <label>Email:</label>
-          <input type="email" name="email" required />
-
-          <label>Message:</label>
-          <textarea name="message" required />
-
-          <button type="submit">Send Message</button>
-        </form>
+    <div className="contact-section">
+      <div className="contact-header">
+        <p className="contact-tagline">Contact Us</p>
+        <h1>SUBMIT YOUR QUESTION</h1>
+        <p className="contact-desc">
+          For franchising, partnerships and other business requests, please use our
+        </p>
+        <a href="/become-a-partner" className="partner-button">BECOME OUR PARTNER →</a>
       </div>
 
-      {/* Chatbot Section */}
-      <div className="chatbot">
-        <h2>Chat with Us</h2>
-        <div className="chat-box">
-          {chatMessages.map((msg, index) => (
-            <div key={index} className={`chat-message ${msg.sender}`}>
-              {msg.text}
-            </div>
-          ))}
-        </div>
-        <div className="chat-input">
-          <input
-            type="text"
-            value={userMessage}
-            onChange={(e) => setUserMessage(e.target.value)}
-            placeholder="Type your message..."
-          />
-          <button onClick={handleSendMessage}>Send</button>
+      <div className="form-chat-wrapper">
+        {/* Contact Form */}
+        <form className="contact-form">
+          <div className="row">
+            <input type="text" placeholder="Name*" required />
+            <input type="text" placeholder="Last Name*" required />
+          </div>
+          <div className="row">
+            <input type="email" placeholder="Email*" required />
+            <select required>
+              <option value="">Purpose of Inquiry*</option>
+              <option value="sponsorship">Sponsorship</option>
+              <option value="franchise">Franchise</option>
+              <option value="media">Media</option>
+            </select>
+          </div>
+          <label>Message</label>
+          <textarea placeholder="Type your message here..." required />
+          <button type="submit" className="submit-btn">SUBMIT →</button>
+        </form>
+
+        {/* Chatbot */}
+        <div className="chatbot-container">
+          <h3>Live Chat</h3>
+          <div className="chat-box">
+            {chatMessages.map((msg, index) => (
+              <div key={index} className={`msg ${msg.sender}`}>
+                {msg.text}
+              </div>
+            ))}
+          </div>
+          <div className="chat-input">
+            <input
+              type="text"
+              value={userMessage}
+              onChange={(e) => setUserMessage(e.target.value)}
+              placeholder="Type your message..."
+            />
+            <button onClick={handleSendMessage}>Send</button>
+          </div>
         </div>
       </div>
     </div>
