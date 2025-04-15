@@ -1,5 +1,6 @@
 import React from "react";
 import './Footer.css';
+import { Link } from 'react-router-dom';
 import { FaFacebookF, FaInstagram, FaYoutube, FaXTwitter, FaTiktok, FaThreads } from "react-icons/fa6";
 
 const Footer = () => {
@@ -21,38 +22,39 @@ const Footer = () => {
         <div className="footer-column">
           <h4>Pages</h4>
           <ul>
-            <li><a href="#">Home</a></li>
-            <li><a href="#">About</a></li>
-            <li><a href="#">Register</a></li>
-            <li><a href="#">Contact</a></li>
+            <li><Link to="/">Home</Link></li>
+            <li><Link to="/AboutSection">About</Link></li>
+            <li><Link to="/">Register</Link></li>
+            <li><Link to="/">Contact</Link></li>
+            <li><Link to="/">Legacy</Link></li>
           </ul>
         </div>
 
         <div className="footer-column">
           <h4>Partners</h4>
           <ul>
-            <li><a href="#">Our Sponsors</a></li>
-            <li><a href="#">Become a Partner</a></li>
+            <li><Link to="/">Our Sponsors</Link></li>
+            <li><Link to="/become-a-partner">Become a Partner</Link></li>
           </ul>
         </div>
 
         <div className="footer-column">
           <h4>Get in touch</h4>
           <ul>
-            <li><a href="#">Talent Appearance</a></li>
-            <li><a href="#">Titleholder and Brand Partnerships</a></li>
-            <li><a href="#">Comments or questions</a></li>
-            <li><a href="#">Travel Information</a></li>
-            <li><a href="#">Broadcast Licensing</a></li>
+            <li><Link to="/appearance">Talent Appearance</Link></li>
+            <li><Link to="/partnerships">Titleholder and Brand Partnerships</Link></li>
+            <li><Link to="/contact">Comments or Questions</Link></li>
+            <li><Link to="/travel-info">Travel Information</Link></li>
+            <li><Link to="/broadcast">Broadcast Licensing</Link></li>
           </ul>
         </div>
       </div>
 
       <div className="footer-bottom">
         <div className="footer-policies">
-          <a href="#">Privacy Policy</a>
-          <a href="#">Terms of Use</a>
-          <a href="#">Cookie Policy</a>
+          <Link to="/privacy-policy">Privacy Policy</Link>
+          <Link to="/terms-of-use">Terms of Use</Link>
+          <Link to="/cookie-policy">Cookie Policy</Link>
         </div>
         <p>&copy; 2025 MISS UNIVERSITY OF GHANA. All Rights Reserved</p>
       </div>

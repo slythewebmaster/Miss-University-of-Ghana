@@ -51,7 +51,7 @@ const App = () => {
           element={
             <>
           <div id="Hero"><Hero /></div>
-          <LegacySection />
+          <div id="Legacy"><LegacySection /></div>
           <div id="About"><About /></div>
           <div id="Highlight"><Highlight /></div>
           <div id="Register"><Register /></div>
