@@ -6,29 +6,10 @@ import logo from '../../assets/Logo_1.png';
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('');
-  const navigate = useNavigate();
   const location = useLocation();
+  const navigate = useNavigate();
 
   const toggleMenu = () => setIsOpen(!isOpen);
-
-  const scrollToSection = (id) => {
-    const section = document.getElementById(id);
-    if (section) {
-      section.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
-  const handleNavClick = (id) => {
-    setIsOpen(false);
-
-    if (location.pathname !== '/') {
-      // Navigate to home and wait, then scroll
-      navigate('/');
-      setTimeout(() => scrollToSection(id), 300);
-    } else {
-      scrollToSection(id);
-    }
-  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -44,23 +25,39 @@ const Navbar = () => {
         }
       }
     };
-
-    window.addEventListener('scroll', handleScroll);
+    if (location.pathname === '/') {
+      window.addEventListener('scroll', handleScroll);
+    }
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [location]);
 
-  const navItems = [
-    { id: 'Hero', label: 'Home' },
-    { id: 'Legacy', label: 'Legacy' },
-    { id: 'About', label: 'About' },
-    { id: 'Register', label: 'Register' },
-    { id: 'Contact', label: 'Contact Us' }
-  ];
+  const handleNavClick = (id) => {
+    setIsOpen(false);
+    if (location.pathname !== '/') {
+      navigate('/');
+      setTimeout(() => {
+        const section = document.getElementById(id);
+        if (section) section.scrollIntoView({ behavior: 'smooth' });
+      }, 300);
+    } else {
+      const section = document.getElementById(id);
+      if (section) section.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   return (
     <nav className="navbar">
       <div className="container">
-        <img src={logo} alt="Logo" className="logo" />
+        <img
+          src={logo}
+          alt="Logo"
+          className="logo"
+          onClick={() => {
+            setIsOpen(false);
+            navigate('/');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+        />
 
         <div className={`nav-toggle ${isOpen ? 'open' : ''}`} onClick={toggleMenu}>
           <span />
@@ -69,7 +66,13 @@ const Navbar = () => {
         </div>
 
         <ul className={`nav-links ${isOpen ? 'show' : ''}`}>
-          {navItems.map(({ id, label }) => (
+          {[
+            { id: 'Hero', label: 'Home' },
+            { id: 'Legacy', label: 'Legacy' },
+            { id: 'About', label: 'About' },
+            { id: 'Register', label: 'Register' },
+            { id: 'Contact', label: 'Contact Us' }
+          ].map(({ id, label }) => (
             <li key={id}>
               <button
                 className={activeSection === id ? 'active' : ''}
