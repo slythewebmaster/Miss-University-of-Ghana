@@ -2,10 +2,10 @@ import React from "react";
 import "./LegacySection.css";
 
 const images = [
-  "https://i.pinimg.com/736x/27/aa/45/27aa4560b15039dff4887179ee737c18.jpg",
-  "https://i.pinimg.com/736x/7c/c2/41/7cc24114ccebff3d5e6ce319698d5fc0.jpg",
-  "https://i.pinimg.com/736x/7e/bd/a2/7ebda211d195cfe858b45fd1f7493102.jpg",
-  "https://i.pinimg.com/736x/64/da/61/64da613f7738cabb38908da181979f7a.jpg"
+  "https://i.pinimg.com/736x/cb/04/8a/cb048a57eae3877197480e7fd76ad6e6.jpg",
+  "https://i.pinimg.com/736x/f1/59/ae/f159aea8712ebea863cc4ed9d1d28a0c.jpg",
+  "https://i.pinimg.com/736x/42/92/9e/42929e2a3155a05ddccfb56efbcb5ca7.jpg",
+  "https://i.pinimg.com/736x/73/75/60/737560827451931d3580588a5ca4e293.jpg"
 ];
 
 const LegacySection = () => {
