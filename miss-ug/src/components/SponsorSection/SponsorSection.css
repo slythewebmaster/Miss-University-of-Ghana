@@ -88,10 +88,29 @@
       align-items: flex-start;
       gap: 40px;
     }
-  
+
     .sponsor-right {
       text-align: left;
       align-items: flex-start;
     }
   }
+
+  .sponsor-logos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 16px;
+    margin-top: 2rem;
+    align-items: center;
+    justify-items: center;
+  }
   
+  .sponsor-logo {
+    max-width: 100px;
+    height: auto;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+  }
+  
+  .sponsor-logo:hover {
+    transform: scale(1.1);
+  }

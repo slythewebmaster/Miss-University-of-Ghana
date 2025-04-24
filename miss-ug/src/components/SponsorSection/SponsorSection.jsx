@@ -1,10 +1,9 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import "./SponsorSection.css";
 
 const SponsorSection = () => {
-  const navigate = useNavigate();
+  const sponsorImages = Array.from({ length: 8 }, (_, i) => `/miss-ug/src/assets/sponsors${i + 1}.png`);
 
   return (
     <section className="sponsor-section">
@@ -23,8 +22,14 @@ const SponsorSection = () => {
         <div className="sponsor-buttons">
           <button className="view-all-btn">VIEW ALL →</button>
           <Link to="/become-a-partner">
-  <button className="become-btn">BECOME OUR PARTNER →</button>
-</Link>
+            <button className="become-btn">BECOME OUR PARTNER →</button>
+          </Link>
+        </div>
+
+        <div className="sponsor-logos">
+          {sponsorImages.map((src, index) => (
+            <img key={index} src={src} alt={`Sponsor ${index + 1}`} className="sponsor-logo" />
+          ))}
         </div>
       </div>
     </section>
