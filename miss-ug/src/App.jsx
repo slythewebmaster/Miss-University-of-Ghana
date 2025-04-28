@@ -18,6 +18,7 @@ import Highlight from './components/Highlight/Highlight';
 import Footer from './components/Footer/Footer';
 import AdminLogin from './components/AdminLogin/AdminLogin';
 import AdminDashboard from './components/AdminDashboard/AdminDashboard';
+import ApplicantDetails from './components/AdminDashboard/ApplicantDetails';
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -82,6 +83,7 @@ const App = () => {
         />
         <Route path="/admin" element={<AdminLogin />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
+        <Route path="/details" element={<ApplicantDetails />} />
         <Route path="/become-a-partner" element={<BecomePartner />} />
         <Route path="/AboutSection" element={<AboutSection />} />
       </Routes>

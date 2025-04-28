@@ -3,6 +3,8 @@
   display: flex;
   height: 100vh;
   font-family: 'Poppins', sans-serif;
+  background-color: #000;
+  color: #fff;
 }
 
 .sidebar {
@@ -21,7 +23,6 @@
 }
 
 .profile-pic {
-  background: url('/path/to/avatar.png') center center no-repeat;
   background-size: cover;
   width: 70px;
   height: 70px;
@@ -53,18 +54,21 @@
   background-color: #1f1f1f;
 }
 
-/* Main dashboard */
 .dashboard-main {
   flex: 1;
-  background-color: #f9fbfd;
+  background-color: #111;
   padding: 2rem;
   overflow-y: auto;
 }
 
-.dashboard-main h1 {
-  font-size: 2rem;
+.dashboard-main h1,
+.dashboard-main h2 {
+  color: #fff;
+}
+
+.dashboard-title {
   margin-bottom: 1rem;
-  font-weight: 600;
+  font-size: 2rem;
 }
 
 .stats {
@@ -74,12 +78,13 @@
 }
 
 .stat-card {
-  background: #fff;
+  background: #222;
   border-radius: 10px;
   padding: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
   flex: 1;
   text-align: center;
+  color: #fff;
 }
 
 .stat-card h4 {
@@ -92,32 +97,45 @@
   margin-top: 0.5rem;
 }
 
-/* FAQ / applicants section */
 .faq {
-  background: #fff;
+  background: #222;
   padding: 1.5rem;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
 }
 
-.faq h2 {
-  font-size: 1.25rem;
-  margin-bottom: 1rem;
-  font-weight: 600;
+.faq p {
+  margin: 0.5rem 0;
+  color: #fff;
 }
 
-.applicant-list {
-  list-style: none;
-  padding: 0;
+.applicants-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  background: #222;
 }
 
-.applicant-list li {
-  padding: 0.5rem 0;
-  border-bottom: 1px solid #eee;
+.applicants-table th,
+.applicants-table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #333;
+  color: #fff;
+}
+
+.clickable-row {
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.clickable-row:hover {
+  background-color: #333;
 }
 
 .loading {
   font-size: 1.5rem;
   text-align: center;
   margin-top: 5rem;
+  color: #fff;
 }

@@ -1,97 +1,127 @@
-import React, { useEffect, useState } from "react";
-import { auth, db } from "../../firebase";
-import { useNavigate } from "react-router-dom";
-import "./AdminDashboard.css";
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { supabase } from '../../supabaseClient';
+import './AdminDashboard.css';
 
 const AdminDashboard = () => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [applicants, setApplicants] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((authUser) => {
-      if (authUser) {
-        setUser(authUser);
-        setLoading(false);
+    const getUser = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        setUser(session.user);
       } else {
-        setLoading(false);
-        navigate("/admin-login");
+        navigate('/admin');
       }
-    });
+    };
 
-    return () => unsubscribe();
+    getUser();
   }, [navigate]);
 
   useEffect(() => {
     const fetchApplicants = async () => {
-      try {
-        const snapshot = await db.collection("applicants").orderBy("timestamp", "desc").get();
-        const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-        setApplicants(data);
-      } catch (error) {
-        console.error("Error fetching applicants:", error);
+      const { data, error } = await supabase
+        .from('applicants')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Error fetching applicants:', error.message);
+      } else {
+        setApplicants(data || []);
       }
+
+      setLoading(false);
     };
 
-    fetchApplicants();
-  }, []);
+    if (user) {
+      fetchApplicants();
+    }
+  }, [user]);
 
   const handleLogout = async () => {
-    try {
-      await auth.signOut();
-      navigate("/admin-login");
-    } catch (error) {
-      console.error("Error logging out: ", error.message);
-    }
+    await supabase.auth.signOut();
+    navigate('/admin');
   };
 
-  if (loading) return <div className="loading">Loading...</div>;
+  if (!user) {
+    return <div className="loading">Loading...</div>;
+  }
+
+  const adminName = user.user_metadata?.full_name || "Admin";
 
   return (
     <div className="admin-container">
       <aside className="sidebar">
-        <div className="logo">👑</div>
-        <div className="profile-pic" />
-        <h3>{user.displayName || user.email}</h3>
-        <button onClick={() => navigate("/add-contestant")}>➕ Add Contestant</button>
-        <button className="nav-button active">🏠 Home</button>
-        <button className="logout" onClick={handleLogout}>🚪 Logout</button>
+        <div className="logo">Admin Dashboard</div>
+        <div
+          className="profile-pic"
+          style={{ backgroundImage: "url('https://img.freepik.com/premium-vector/anime-cartoon-character-vector-illustration_648489-34.jpg')" }}
+        ></div>
+        <h3>{adminName}</h3>
+        <button className="nav-button active">Dashboard</button>
+        <button className="nav-button" onClick={handleLogout}>Logout</button>
       </aside>
 
       <main className="dashboard-main">
-        <h1>Admin Dashboard</h1>
+        <h1 className="dashboard-title">Welcome, {adminName}</h1>
 
-        <section className="stats">
-          <StatCard title="Registered Applicants" value={applicants.length} />
-          <StatCard title="Active Admins" value="3" />
-          <StatCard title="Pending Reviews" value="4" />
-        </section>
+        <div className="stats">
+          <div className="stat-card">
+            <h4>Total Applicants</h4>
+            <p>{applicants.length}</p>
+          </div>
+          <div className="stat-card">
+            <h4>New This Month</h4>
+            <p>{
+              applicants.filter(applicant => {
+                const date = new Date(applicant.created_at);
+                const now = new Date();
+                return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
+              }).length
+            }</p>
+          </div>
+        </div>
 
-        <section className="faq">
-          <h2>Newly Registered Applicants</h2>
-          {applicants.length > 0 ? (
-            <ul className="applicant-list">
-              {applicants.map((applicant) => (
-                <li key={applicant.id}>
-                  <strong>{applicant.fullName}</strong> — {applicant.email}
-                </li>
+        <h2>Applicants</h2>
+
+        {loading ? (
+          <p>Loading applicants...</p>
+        ) : applicants.length > 0 ? (
+          <table className="applicants-table">
+            <thead>
+              <tr>
+                <th>Full Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Registered On</th>
+              </tr>
+            </thead>
+            <tbody>
+              {applicants.map(applicant => (
+                <tr
+                  key={applicant.id}
+                  onClick={() => navigate(`/admin/applicant/${applicant.id}`)}
+                  className="clickable-row"
+                >
+                  <td>{applicant.full_name}</td>
+                  <td>{applicant.email}</td>
+                  <td>{applicant.phone}</td>
+                  <td>{new Date(applicant.created_at).toLocaleString()}</td>
+                </tr>
               ))}
-            </ul>
-          ) : (
-            <p>No applicants yet.</p>
-          )}
-        </section>
+            </tbody>
+          </table>
+        ) : (
+          <p>No applicants found.</p>
+        )}
       </main>
     </div>
   );
 };
-
-const StatCard = ({ title, value }) => (
-  <div className="stat-card">
-    <h4>{title}</h4>
-    <p>{value}</p>
-  </div>
-);
 
 export default AdminDashboard;

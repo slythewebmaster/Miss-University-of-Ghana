@@ -10,58 +10,33 @@ import "./register.css";
 
 // Initialize Supabase
 const supabase = createClient(
-  "https://YOUR_SUPABASE_URL.supabase.co", 
-  "YOUR_SUPABASE_ANON_KEY"
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_ANON_KEY
 );
 
 const Register = () => {
-  const publicKey = "pk_test_4275159c5bbeb93d066bea957d403d07bc85ea68";
-  const amountInCedis = 50 * 100;
-
   const { width, height } = useWindowSize();
-
-  const [formData, setFormData] = useState({
-    name: "",
-    age: "",
-    gender: "",
-    uniqueIntro: "",
-    hall: "",
-    program: "",
-    inspiration: "",
-    style: "",
-    criticism: "",
-    dinnerGuest: "",
-    youthIssue: "",
-    beautyDefinition: "",
-    confidence: "",
-    impactIfWin: "",
-    achievement: "",
-    balance: "",
-    campusChange: "",
-    universityExperience: "",
-    superpower: "",
-    email: "", // Add email for Paystack fallback
-  });
-
+  const [formData, setFormData] = useState(initialFormState);
   const [errors, setErrors] = useState({});
   const [showPay, setShowPay] = useState(false);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [captchaValid, setCaptchaValid] = useState(false);
 
+  const publicKey = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY;
+  const amountInCedis = 50 * 100; // Paystack expects amount in *100
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    setErrors((prev) => ({ ...prev, [name]: "" }));
+    setFormData(prev => ({ ...prev, [name]: value }));
+    setErrors(prev => ({ ...prev, [name]: "" }));
   };
 
   const validateForm = () => {
     const newErrors = {};
-    Object.entries(formData).forEach(([key, val]) => {
-      if (!val.trim()) {
-        newErrors[key] = "This field is required.";
-      }
-    });
+    for (const [key, value] of Object.entries(formData)) {
+      if (!value.trim()) newErrors[key] = "This field is required.";
+    }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -74,29 +49,19 @@ const Register = () => {
       return;
     }
 
-    try {
-      setLoading(true);
-      const { data, error } = await supabase.from("registrations").insert([
-        {
-          ...formData,
-          paymentStatus: "Pending",
-        }
-      ]);
+    setLoading(true);
+    const { error } = await supabase.from("registrations").insert([
+      { ...formData, paymentStatus: "Pending" }
+    ]);
 
-      if (error) {
-        console.error(error);
-        toast.error("There was an issue saving your data.");
-        setLoading(false);
-      } else {
-        console.log("Data saved before payment:", data);
-        toast.success("Form saved! Proceed to payment.");
-        setShowPay(true);
-        setLoading(false);
-      }
-    } catch (err) {
-      console.error(err);
-      toast.error("There was a server error.");
-      setLoading(false);
+    setLoading(false);
+
+    if (error) {
+      console.error(error);
+      toast.error("Error saving form. Please try again.");
+    } else {
+      toast.success("Form saved! Proceed to payment.");
+      setShowPay(true);
     }
   };
 
@@ -107,40 +72,33 @@ const Register = () => {
       email: formData.email || "test@example.com",
       amount: amountInCedis,
       currency: "GHS",
-      callback: async function (response) {
+      callback: async (response) => {
         setLoading(false);
-        try {
-          // Update payment info in Supabase
-          const { error } = await supabase.from("registrations")
-            .update({
-              paymentStatus: "Success",
-              paystackRef: response.reference,
-            })
-            .eq('email', formData.email); // Match by email
+        const { error } = await supabase
+          .from("registrations")
+          .update({
+            paymentStatus: "Success",
+            paystackRef: response.reference,
+          })
+          .eq("email", formData.email);
 
-          if (error) {
-            console.error(error);
-            toast.error("Payment confirmed but saving failed.");
-          } else {
-            toast.success("Payment successful! 🎉");
-            setSuccess(true);
-          }
-        } catch (err) {
-          console.error(err);
-          toast.error("Something went wrong updating payment info.");
+        if (error) {
+          console.error(error);
+          toast.error("Payment recorded, but saving failed.");
+        } else {
+          toast.success("Payment successful! 🎉");
+          setSuccess(true);
         }
       },
-      onClose: function () {
-        toast.error("Payment popup closed without completing payment.");
+      onClose: () => {
+        toast.error("Payment popup closed.");
         setLoading(false);
       }
     });
     handler.openIframe();
   };
 
-  const onCaptchaChange = (value) => {
-    setCaptchaValid(!!value);
-  };
+  const onCaptchaChange = (value) => setCaptchaValid(!!value);
 
   if (success) {
     return (
@@ -171,45 +129,14 @@ const Register = () => {
         {Object.entries(formData).map(([key, value]) => (
           <div key={key}>
             <label>{formatLabel(key)}</label>
-            {key === "name" || key === "age" || key === "hall" || key === "program" || key === "email" ? (
-              <input
-                type={key === "age" ? "number" : key === "email" ? "email" : "text"}
-                name={key}
-                value={value}
-                onChange={handleChange}
-                disabled={loading}
-                className={errors[key] ? "error" : ""}
-              />
-            ) : key === "gender" ? (
-              <select
-                name="gender"
-                value={value}
-                onChange={handleChange}
-                disabled={loading}
-                className={errors[key] ? "error" : ""}
-              >
-                <option value="">Select Gender</option>
-                <option value="Female">Female</option>
-                <option value="Male">Male</option>
-                <option value="Non-binary">Non-binary</option>
-                <option value="Prefer not to say">Prefer not to say</option>
-              </select>
-            ) : (
-              <textarea
-                name={key}
-                value={value}
-                onChange={handleChange}
-                disabled={loading}
-                className={errors[key] ? "error" : ""}
-              />
-            )}
+            {renderInput(key, value, handleChange, loading, errors[key])}
             {errors[key] && <small className="error-text">{errors[key]}</small>}
           </div>
         ))}
 
         <div className="captcha">
           <ReCAPTCHA
-            sitekey="6LfphxgrAAAAALitTXc6bvDm6YgpEtg_WisWi-9T"
+            sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
             onChange={onCaptchaChange}
           />
         </div>
@@ -239,6 +166,31 @@ const Register = () => {
   );
 };
 
+// Initial form state
+const initialFormState = {
+  name: "",
+  age: "",
+  gender: "",
+  uniqueIntro: "",
+  hall: "",
+  program: "",
+  inspiration: "",
+  style: "",
+  criticism: "",
+  dinnerGuest: "",
+  youthIssue: "",
+  beautyDefinition: "",
+  confidence: "",
+  impactIfWin: "",
+  achievement: "",
+  balance: "",
+  campusChange: "",
+  universityExperience: "",
+  superpower: "",
+  email: "",
+};
+
+// Map label text nicely
 const formatLabel = (key) => {
   const map = {
     name: "What is your name?",
@@ -263,6 +215,48 @@ const formatLabel = (key) => {
     superpower: "If you had a superpower, what would it be?",
   };
   return map[key] || key;
+};
+
+// Render input or textarea or select
+const renderInput = (key, value, handleChange, disabled, hasError) => {
+  if (["name", "age", "hall", "program", "email"].includes(key)) {
+    return (
+      <input
+        type={key === "age" ? "number" : key === "email" ? "email" : "text"}
+        name={key}
+        value={value}
+        onChange={handleChange}
+        disabled={disabled}
+        className={hasError ? "error" : ""}
+      />
+    );
+  } else if (key === "gender") {
+    return (
+      <select
+        name={key}
+        value={value}
+        onChange={handleChange}
+        disabled={disabled}
+        className={hasError ? "error" : ""}
+      >
+        <option value="">Select Gender</option>
+        <option value="Female">Female</option>
+        <option value="Male">Male</option>
+        <option value="Non-binary">Non-binary</option>
+        <option value="Prefer not to say">Prefer not to say</option>
+      </select>
+    );
+  } else {
+    return (
+      <textarea
+        name={key}
+        value={value}
+        onChange={handleChange}
+        disabled={disabled}
+        className={hasError ? "error" : ""}
+      />
+    );
+  }
 };
 
 export default Register;
