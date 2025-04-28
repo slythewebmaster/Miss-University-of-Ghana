@@ -1,40 +1,42 @@
 import React, { useState } from 'react';
-import { supabase } from '../../supabaseClient';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '../../supabaseClient';
 import Navbar from '../Navbar/Navbar';
 import './AdminLogin.css';
 
 const AdminLogin = () => {
   const navigate = useNavigate();
-  const [mode, setMode] = useState("login"); // login, register, forgot
+  const [mode, setMode] = useState('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false); // 🆕 Added loading state
 
   const handleAuth = async (e) => {
     e.preventDefault();
     setError('');
     setMessage('');
+    setLoading(true); // Start loading
 
     try {
       if (mode === 'login') {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
         navigate('/admin-dashboard');
-      } 
-      else if (mode === 'register') {
+      } else if (mode === 'register') {
         const { error } = await supabase.auth.signUp({ email, password });
         if (error) throw error;
-        setMessage('✅ Registration successful. Please check your email to confirm.');
-      } 
-      else if (mode === 'forgot') {
+        setMessage('✅ Registration successful. Please check your email.');
+      } else if (mode === 'forgot') {
         const { error } = await supabase.auth.resetPasswordForEmail(email);
         if (error) throw error;
         setMessage('✅ Password reset email sent.');
       }
     } catch (err) {
-      setError(err.message);
+      setError(err.message || 'Something went wrong.');
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
 
@@ -42,55 +44,62 @@ const AdminLogin = () => {
     <>
       <Navbar />
       <div className="admin-login-container">
-        <div className="login-box">
-          <h2>
-            {mode === 'login' ? 'Admin Login' :
-             mode === 'register' ? 'Register Admin' :
-             'Reset Password'}
+        <div className="admin-login-card">
+          <h2 className="admin-login-title">
+            {mode === 'login' && 'Admin Login'}
+            {mode === 'register' && 'Create Admin Account'}
+            {mode === 'forgot' && 'Reset Password'}
           </h2>
 
-          {error && <p className="error">{error}</p>}
-          {message && <p className="success">{message}</p>}
+          {error && <p className="admin-login-error">{error}</p>}
+          {message && <p className="admin-login-success">{message}</p>}
 
-          <form onSubmit={handleAuth}>
+          <form onSubmit={handleAuth} className="admin-login-form">
             <input
               type="email"
-              placeholder="Email"
-              required
+              placeholder="Email Address"
               value={email}
-              onChange={e => setEmail(e.target.value)}
+              onChange={(e) => setEmail(e.target.value)}
+              required
             />
 
             {mode !== 'forgot' && (
               <input
                 type="password"
                 placeholder="Password"
-                required
                 value={password}
-                onChange={e => setPassword(e.target.value)}
+                onChange={(e) => setPassword(e.target.value)}
+                required
               />
             )}
 
-            <button type="submit" className="auth-btn">
-              {mode === 'login' ? 'Login' :
-               mode === 'register' ? 'Register' : 'Send Reset Link'}
+            <button type="submit" className="admin-login-button" disabled={loading}>
+              {loading ? (
+                <div className="spinner"></div>
+              ) : (
+                <>
+                  {mode === 'login' && 'Sign In'}
+                  {mode === 'register' && 'Register'}
+                  {mode === 'forgot' && 'Send Reset Link'}
+                </>
+              )}
             </button>
           </form>
 
-          <div className="switch-auth">
+          <div className="admin-login-switch">
             {mode === 'login' && (
               <>
                 <p>Don't have an account? <span onClick={() => setMode('register')}>Register</span></p>
-                <p>Forgot password? <span onClick={() => setMode('forgot')}>Reset</span></p>
+                <p>Forgot password? <span onClick={() => setMode('forgot')}>Reset Password</span></p>
               </>
             )}
 
             {mode === 'register' && (
-              <p>Already registered? <span onClick={() => setMode('login')}>Login</span></p>
+              <p>Already have an account? <span onClick={() => setMode('login')}>Sign In</span></p>
             )}
 
             {mode === 'forgot' && (
-              <p>Go back to <span onClick={() => setMode('login')}>Login</span></p>
+              <p>Remembered? <span onClick={() => setMode('login')}>Back to Login</span></p>
             )}
           </div>
         </div>
