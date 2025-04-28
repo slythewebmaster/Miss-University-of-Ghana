@@ -147,14 +147,6 @@ const initialFormState = {
   hall: "",
   program: "",
   inspiration: "",
-  youthIssue: "",
-  beautyDefinition: "",
-  confidence: "",
-  impactIfWin: "",
-  achievement: "",
-  balance: "",
-  campusChange: "",
-  universityExperience: "",
 };
 
 // Map label text nicely
@@ -168,14 +160,6 @@ const formatLabel = (key) => {
     hall: "What is your Hall of Residence?",
     program: "What is your Program of Study?",
     inspiration: "What inspired you to join this beauty pageant?",
-    youthIssue: "What issue matters most to young people today?",
-    beautyDefinition: "How do you define beauty?",
-    confidence: "What does confidence mean to you?",
-    impactIfWin: "If you win, how would you make a difference?",
-    achievement: "What is your biggest achievement in university?",
-    balance: "How do you balance academics and personal life?",
-    campusChange: "What change would you implement on campus?",
-    universityExperience: "How has university shaped you?",
   };
   return map[key] || key;
 };
