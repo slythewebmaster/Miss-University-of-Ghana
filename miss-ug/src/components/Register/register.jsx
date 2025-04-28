@@ -50,44 +50,27 @@ const Register = () => {
     }
 
     setLoading(true);
-    const { error } = await supabase.from("registrations").insert([
-      { ...formData, paymentStatus: "Pending" }
-    ]);
 
-    setLoading(false);
-
-    if (error) {
-      console.error(error);
-      toast.error("Error saving form. Please try again.");
-    } else {
-      toast.success("Form saved! Proceed to payment.");
-      setShowPay(true);
-    }
-  };
-
-  const handlePayment = () => {
-    setLoading(true);
+    // Start payment process before saving form data to Supabase
     const handler = window.PaystackPop.setup({
       key: publicKey,
       email: formData.email || "test@example.com",
       amount: amountInCedis,
       currency: "GHS",
       callback: async (response) => {
+        // After successful payment, save form data to Supabase
+        const { error } = await supabase.from("registrations").insert([
+          { ...formData, paymentStatus: "Success", paystackRef: response.reference },
+        ]);
+
         setLoading(false);
-        const { error } = await supabase
-          .from("registrations")
-          .update({
-            paymentStatus: "Success",
-            paystackRef: response.reference,
-          })
-          .eq("email", formData.email);
 
         if (error) {
           console.error(error);
-          toast.error("Payment recorded, but saving failed.");
+          toast.error("Payment successful, but saving data failed. Please try again.");
         } else {
-          toast.success("Payment successful! 🎉");
-          setSuccess(true);
+          toast.success("Payment and registration successful! 🎉");
+          setSuccess(true); // Show success page if payment and data save are successful
         }
       },
       onClose: () => {
@@ -95,6 +78,7 @@ const Register = () => {
         setLoading(false);
       }
     });
+
     handler.openIframe();
   };
 
