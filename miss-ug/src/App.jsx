@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from './firebase';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+
+import { supabase } from './supabaseClient';
 
 import Navbar from './components/Navbar/Navbar';
 import Hero from './components/Hero/Hero';
@@ -19,23 +18,34 @@ import Highlight from './components/Highlight/Highlight';
 import Footer from './components/Footer/Footer';
 import AdminLogin from './components/AdminLogin/AdminLogin';
 import AdminDashboard from './components/AdminDashboard/AdminDashboard';
-import { SiVercel } from 'react-icons/si';
 
 const App = () => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, setUser);
-    return () => unsub();
+    // Check for active session
+    const getUser = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setUser(session?.user || null);
+    };
+
+    getUser();
+
+    // Listen for auth changes
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user || null);
+    });
+
+    return () => {
+      listener.subscription.unsubscribe();
+    };
   }, []);
 
   function ScrollToTop() {
     const { pathname } = useLocation();
-  
     useEffect(() => {
       window.scrollTo(0, 0);
     }, [pathname]);
-  
     return null;
   }
 
@@ -43,20 +53,30 @@ const App = () => {
     <Router>
       <ScrollToTop />
 
-      <ToastContainer position="top-right" autoClose={3000} newestOnTop closeOnClick pauseOnFocusLoss draggable pauseOnHover theme='colored' />
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        newestOnTop
+        closeOnClick
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
+
       <Navbar user={user} />
       <Routes>
         <Route
           path="/"
           element={
             <>
-          <div id="Hero"><Hero /></div>
-          <div id="Legacy"><LegacySection /></div>
-          <div id="About"><About /></div>
-          <div id="Highlight"><Highlight /></div>
-          <div id="Register"><Register /></div>
-          <div id="Sponsors"><SponsorSection /></div>
-          <div id="Contact"><ContactUs /></div>
+              <div id="Hero"><Hero /></div>
+              <div id="Legacy"><LegacySection /></div>
+              <div id="About"><About /></div>
+              <div id="Highlight"><Highlight /></div>
+              <div id="Register"><Register /></div>
+              <div id="Sponsors"><SponsorSection /></div>
+              <div id="Contact"><ContactUs /></div>
             </>
           }
         />
@@ -65,6 +85,7 @@ const App = () => {
         <Route path="/become-a-partner" element={<BecomePartner />} />
         <Route path="/AboutSection" element={<AboutSection />} />
       </Routes>
+
       <Footer />
     </Router>
   );
