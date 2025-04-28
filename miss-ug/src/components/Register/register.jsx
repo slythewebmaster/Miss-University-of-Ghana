@@ -5,6 +5,7 @@ import toast, { Toaster } from "react-hot-toast";
 import ReCAPTCHA from "react-google-recaptcha";
 import Confetti from "react-confetti";
 import { useWindowSize } from "react-use";
+import { PaystackButton } from "react-paystack";
 
 import "./register.css";
 
@@ -18,18 +19,17 @@ const Register = () => {
   const { width, height } = useWindowSize();
   const [formData, setFormData] = useState(initialFormState);
   const [errors, setErrors] = useState({});
-  const [showPay, setShowPay] = useState(false);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [captchaValid, setCaptchaValid] = useState(false);
 
   const publicKey = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY;
-  const amountInCedis = 50 * 100; // Paystack expects amount in *100
+  const amountInCedis = 50 * 100; // Paystack expects amount in kobo (GHS * 100)
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-    setErrors(prev => ({ ...prev, [name]: "" }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
   const validateForm = () => {
@@ -41,48 +41,54 @@ const Register = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleFormSubmit = async (e) => {
+  const onCaptchaChange = (value) => setCaptchaValid(!!value);
+
+  const handlePaymentSuccess = async (reference) => {
+    // After successful payment, save form data to Supabase
+    const { error } = await supabase.from("registrations").insert([
+      { ...formData, paymentStatus: "Success", paystackRef: reference },
+    ]);
+
+    setLoading(false);
+
+    if (error) {
+      console.error(error);
+      toast.error("Payment successful, but saving data failed. Please try again.");
+    } else {
+      toast.success("Payment and registration successful! 🎉");
+      setSuccess(true); // Show success page if payment and data save are successful
+    }
+  };
+
+  const handlePaymentClose = () => {
+    toast.error("Payment popup closed.");
+    setLoading(false);
+  };
+
+  const handleFormSubmit = (e) => {
     e.preventDefault();
     if (!validateForm()) return;
     if (!captchaValid) {
       toast.error("Please complete the CAPTCHA verification.");
       return;
     }
-
     setLoading(true);
-
-    // Start payment process before saving form data to Supabase
-    const handler = window.PaystackPop.setup({
-      key: publicKey,
-      email: formData.email || "test@example.com",
-      amount: amountInCedis,
-      currency: "GHS",
-      callback: async (response) => {
-        // After successful payment, save form data to Supabase
-        const { error } = await supabase.from("registrations").insert([
-          { ...formData, paymentStatus: "Success", paystackRef: response.reference },
-        ]);
-
-        setLoading(false);
-
-        if (error) {
-          console.error(error);
-          toast.error("Payment successful, but saving data failed. Please try again.");
-        } else {
-          toast.success("Payment and registration successful! 🎉");
-          setSuccess(true); // Show success page if payment and data save are successful
-        }
-      },
-      onClose: () => {
-        toast.error("Payment popup closed.");
-        setLoading(false);
-      }
-    });
-
-    handler.openIframe();
+    // Payment will be initiated via PaystackButton
   };
 
-  const onCaptchaChange = (value) => setCaptchaValid(!!value);
+  const componentProps = {
+    email: formData.email || "test@example.com",
+    amount: amountInCedis,
+    metadata: {
+      name: formData.name,
+    },
+    publicKey,
+    text: loading ? "Processing Payment..." : "Pay GHS 50 to Complete Registration",
+    onSuccess: (reference) => handlePaymentSuccess(reference.reference),
+    onClose: handlePaymentClose,
+    disabled: loading,
+    className: "pay-button",
+  };
 
   if (success) {
     return (
@@ -125,26 +131,7 @@ const Register = () => {
           />
         </div>
 
-        {!showPay ? (
-          <button type="submit" className="submit-button" disabled={loading}>
-            {loading ? "Saving..." : "Proceed to Payment"}
-          </button>
-        ) : (
-          <button
-            type="button"
-            className="pay-button"
-            onClick={handlePayment}
-            disabled={loading}
-          >
-            {loading ? (
-              <>
-                <span className="spinner"></span> Processing Payment...
-              </>
-            ) : (
-              "Pay GHS 50 to Complete Registration"
-            )}
-          </button>
-        )}
+        <PaystackButton {...componentProps} />
       </form>
     </motion.div>
   );
@@ -155,13 +142,11 @@ const initialFormState = {
   name: "",
   age: "",
   gender: "",
+  email: "",
   uniqueIntro: "",
   hall: "",
   program: "",
   inspiration: "",
-  style: "",
-  criticism: "",
-  dinnerGuest: "",
   youthIssue: "",
   beautyDefinition: "",
   confidence: "",
@@ -170,8 +155,6 @@ const initialFormState = {
   balance: "",
   campusChange: "",
   universityExperience: "",
-  superpower: "",
-  email: "",
 };
 
 // Map label text nicely
@@ -185,9 +168,6 @@ const formatLabel = (key) => {
     hall: "What is your Hall of Residence?",
     program: "What is your Program of Study?",
     inspiration: "What inspired you to join this beauty pageant?",
-    style: "How would you describe your personal style?",
-    criticism: "How do you handle criticism? Share an example.",
-    dinnerGuest: "If you could have dinner with anyone, who and why?",
     youthIssue: "What issue matters most to young people today?",
     beautyDefinition: "How do you define beauty?",
     confidence: "What does confidence mean to you?",
@@ -196,7 +176,6 @@ const formatLabel = (key) => {
     balance: "How do you balance academics and personal life?",
     campusChange: "What change would you implement on campus?",
     universityExperience: "How has university shaped you?",
-    superpower: "If you had a superpower, what would it be?",
   };
   return map[key] || key;
 };
@@ -225,9 +204,7 @@ const renderInput = (key, value, handleChange, disabled, hasError) => {
       >
         <option value="">Select Gender</option>
         <option value="Female">Female</option>
-        <option value="Male">Male</option>
         <option value="Non-binary">Non-binary</option>
-        <option value="Prefer not to say">Prefer not to say</option>
       </select>
     );
   } else {
