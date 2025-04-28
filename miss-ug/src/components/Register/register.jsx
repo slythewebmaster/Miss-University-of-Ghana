@@ -1,13 +1,24 @@
 import React, { useState } from "react";
-import { db } from "../../firebase";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { motion } from "framer-motion";
+import { createClient } from "@supabase/supabase-js";
+import toast, { Toaster } from "react-hot-toast";
 import ReCAPTCHA from "react-google-recaptcha";
+import Confetti from "react-confetti";
+import { useWindowSize } from "react-use";
+
 import "./register.css";
+
+// Initialize Supabase
+const supabase = createClient(
+  "https://YOUR_SUPABASE_URL.supabase.co", 
+  "YOUR_SUPABASE_ANON_KEY"
+);
 
 const Register = () => {
   const publicKey = "pk_test_4275159c5bbeb93d066bea957d403d07bc85ea68";
   const amountInCedis = 50 * 100;
+
+  const { width, height } = useWindowSize();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -29,6 +40,7 @@ const Register = () => {
     campusChange: "",
     universityExperience: "",
     superpower: "",
+    email: "", // Add email for Paystack fallback
   });
 
   const [errors, setErrors] = useState({});
@@ -58,21 +70,33 @@ const Register = () => {
     e.preventDefault();
     if (!validateForm()) return;
     if (!captchaValid) {
-      alert("Please complete the CAPTCHA verification.");
+      toast.error("Please complete the CAPTCHA verification.");
       return;
     }
 
     try {
-      const docRef = await addDoc(collection(db, "registrations"), {
-        ...formData,
-        timestamp: serverTimestamp(),
-      });
+      setLoading(true);
+      const { data, error } = await supabase.from("registrations").insert([
+        {
+          ...formData,
+          paymentStatus: "Pending",
+        }
+      ]);
 
-      console.log("Data saved before payment:", docRef.id);
-      setShowPay(true);
+      if (error) {
+        console.error(error);
+        toast.error("There was an issue saving your data.");
+        setLoading(false);
+      } else {
+        console.log("Data saved before payment:", data);
+        toast.success("Form saved! Proceed to payment.");
+        setShowPay(true);
+        setLoading(false);
+      }
     } catch (err) {
-      console.error("Error saving registration data: ", err);
-      alert("There was an issue saving your data. Please try again.");
+      console.error(err);
+      toast.error("There was a server error.");
+      setLoading(false);
     }
   };
 
@@ -80,27 +104,36 @@ const Register = () => {
     setLoading(true);
     const handler = window.PaystackPop.setup({
       key: publicKey,
-      email: formData.email || "test@example.com", // fallback
+      email: formData.email || "test@example.com",
       amount: amountInCedis,
       currency: "GHS",
       callback: async function (response) {
         setLoading(false);
         try {
-          await addDoc(collection(db, "registrations"), {
-            paystackRef: response.reference,
-            paymentStatus: "Success",
-            timestamp: serverTimestamp(),
-          });
-          setSuccess(true);
+          // Update payment info in Supabase
+          const { error } = await supabase.from("registrations")
+            .update({
+              paymentStatus: "Success",
+              paystackRef: response.reference,
+            })
+            .eq('email', formData.email); // Match by email
+
+          if (error) {
+            console.error(error);
+            toast.error("Payment confirmed but saving failed.");
+          } else {
+            toast.success("Payment successful! 🎉");
+            setSuccess(true);
+          }
         } catch (err) {
-          console.error("Saving error: ", err);
-          alert("There was an error saving your data.");
+          console.error(err);
+          toast.error("Something went wrong updating payment info.");
         }
       },
       onClose: function () {
-        alert("Payment popup closed.");
+        toast.error("Payment popup closed without completing payment.");
         setLoading(false);
-      },
+      }
     });
     handler.openIframe();
   };
@@ -112,6 +145,7 @@ const Register = () => {
   if (success) {
     return (
       <div className="register-container">
+        <Confetti width={width} height={height} numberOfPieces={400} recycle={false} />
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -131,17 +165,19 @@ const Register = () => {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
     >
+      <Toaster />
       <h1 className="title">Beauty Pageant Registration</h1>
       <form onSubmit={handleFormSubmit} className="registration-form">
         {Object.entries(formData).map(([key, value]) => (
           <div key={key}>
             <label>{formatLabel(key)}</label>
-            {key === "name" || key === "age" || key === "hall" || key === "program" ? (
+            {key === "name" || key === "age" || key === "hall" || key === "program" || key === "email" ? (
               <input
-                type={key === "age" ? "number" : "text"}
+                type={key === "age" ? "number" : key === "email" ? "email" : "text"}
                 name={key}
                 value={value}
                 onChange={handleChange}
+                disabled={loading}
                 className={errors[key] ? "error" : ""}
               />
             ) : key === "gender" ? (
@@ -149,6 +185,7 @@ const Register = () => {
                 name="gender"
                 value={value}
                 onChange={handleChange}
+                disabled={loading}
                 className={errors[key] ? "error" : ""}
               >
                 <option value="">Select Gender</option>
@@ -162,6 +199,7 @@ const Register = () => {
                 name={key}
                 value={value}
                 onChange={handleChange}
+                disabled={loading}
                 className={errors[key] ? "error" : ""}
               />
             )}
@@ -178,7 +216,7 @@ const Register = () => {
 
         {!showPay ? (
           <button type="submit" className="submit-button" disabled={loading}>
-            {loading ? "Validating..." : "Proceed to Payment"}
+            {loading ? "Saving..." : "Proceed to Payment"}
           </button>
         ) : (
           <button
@@ -206,22 +244,23 @@ const formatLabel = (key) => {
     name: "What is your name?",
     age: "What is your age?",
     gender: "What is your gender?",
+    email: "What is your email address?",
     uniqueIntro: "Can you introduce yourself and tell us what makes you unique?",
     hall: "What is your Hall of Residence?",
     program: "What is your Program of Study?",
     inspiration: "What inspired you to join this beauty pageant?",
     style: "How would you describe your personal style?",
-    criticism: "How do you handle criticism, and can you share an example?",
-    dinnerGuest: "If you could have dinner with any historical figure, who would it be and why?",
-    youthIssue: "What is the most important issue facing young people today?",
-    beautyDefinition: "How do you define beauty, and how do you embody that definition?",
-    confidence: "What does confidence mean to you, and how do you show it in your daily life?",
-    impactIfWin: "If you were to win this pageant, how would you use your title to make a difference?",
-    achievement: "What is your biggest achievement in university so far?",
-    balance: "How do you balance academics, extracurricular activities, and personal life?",
-    campusChange: "If you could implement one change on campus, what would it be and why?",
-    universityExperience: "How has your university experience shaped the person you are today?",
-    superpower: "If you could have any superpower, what would it be and how would you use it?",
+    criticism: "How do you handle criticism? Share an example.",
+    dinnerGuest: "If you could have dinner with anyone, who and why?",
+    youthIssue: "What issue matters most to young people today?",
+    beautyDefinition: "How do you define beauty?",
+    confidence: "What does confidence mean to you?",
+    impactIfWin: "If you win, how would you make a difference?",
+    achievement: "What is your biggest achievement in university?",
+    balance: "How do you balance academics and personal life?",
+    campusChange: "What change would you implement on campus?",
+    universityExperience: "How has university shaped you?",
+    superpower: "If you had a superpower, what would it be?",
   };
   return map[key] || key;
 };

@@ -1,11 +1,5 @@
 import React, { useState } from 'react';
-import { auth, googleProvider } from '../../firebase';
-import {
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  sendPasswordResetEmail,
-  signInWithPopup,
-} from 'firebase/auth';
+import { supabase } from '../../supabaseClient';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../Navbar/Navbar';
 import './AdminLogin.css';
@@ -18,15 +12,6 @@ const AdminLogin = () => {
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
 
-  const handleGoogleLogin = async () => {
-    try {
-      await signInWithPopup(auth, googleProvider);
-      navigate('/admin-dashboard');
-    } catch (err) {
-      setError(err.message);
-    }
-  };
-
   const handleAuth = async (e) => {
     e.preventDefault();
     setError('');
@@ -34,13 +19,18 @@ const AdminLogin = () => {
 
     try {
       if (mode === 'login') {
-        await signInWithEmailAndPassword(auth, email, password);
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) throw error;
         navigate('/admin-dashboard');
-      } else if (mode === 'register') {
-        await createUserWithEmailAndPassword(auth, email, password);
-        navigate('/admin-dashboard');
-      } else if (mode === 'forgot') {
-        await sendPasswordResetEmail(auth, email);
+      } 
+      else if (mode === 'register') {
+        const { error } = await supabase.auth.signUp({ email, password });
+        if (error) throw error;
+        setMessage('✅ Registration successful. Please check your email to confirm.');
+      } 
+      else if (mode === 'forgot') {
+        const { error } = await supabase.auth.resetPasswordForEmail(email);
+        if (error) throw error;
         setMessage('✅ Password reset email sent.');
       }
     } catch (err) {
@@ -86,10 +76,6 @@ const AdminLogin = () => {
                mode === 'register' ? 'Register' : 'Send Reset Link'}
             </button>
           </form>
-
-          <button className="google-btn" onClick={handleGoogleLogin}>
-            Sign in with Google
-          </button>
 
           <div className="switch-auth">
             {mode === 'login' && (
