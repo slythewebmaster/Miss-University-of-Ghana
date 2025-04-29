@@ -152,3 +152,19 @@
     padding: 0.9rem;
   }
 }
+
+/* === Optional Enhancements === */
+
+/* Disable styling for inputs */
+.registration-form input:disabled,
+.registration-form textarea:disabled,
+.registration-form select:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Better textarea UX */
+.registration-form textarea {
+  min-height: 120px;
+  resize: vertical;
+}
