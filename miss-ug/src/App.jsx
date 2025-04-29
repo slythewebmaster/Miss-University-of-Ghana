@@ -11,6 +11,7 @@ import LegacySection from './components/LegacySection/LegacySection';
 import About from './components/About/About';
 import AboutSection from './components/AboutSection/AboutSection';
 import Register from './components/Register/register';
+import Verify from './components/Register/Verify';
 import SponsorSection from './components/SponsorSection/SponsorSection';
 import BecomePartner from './components/BecomePartner/BecomePartner';
 import ContactUs from './components/Contact/Contact';
@@ -84,6 +85,7 @@ const App = () => {
         <Route path="/admin" element={<AdminLogin />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
         <Route path="/details" element={<ApplicantDetails />} />
+        <Route path="/Verify" element={<Verify />} />
         <Route path="/become-a-partner" element={<BecomePartner />} />
         <Route path="/AboutSection" element={<AboutSection />} />
       </Routes>
