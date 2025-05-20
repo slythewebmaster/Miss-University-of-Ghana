@@ -1,13 +1,16 @@
 {
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/" }
+  "version": 2,
+  "builds": [
+    { "src": "api/verify.js", "use": "@vercel/node" }
   ],
   "functions": {
-    "builds": [
-      { "src": "api/verify.js", "use": "@vercel/node" }
-    ],
-    "routes": [
-      { "src": "/verify", "dest": "/api/verify.js" }
-    ]
-  }
+    "api/verify.js": {
+      "memory": 128,
+      "maxDuration": 10
+    }
+  },
+  "routes": [
+    { "src": "/verify", "dest": "/api/verify.js" },
+    { "src": "/(.*)", "dest": "/" }
+  ]
 }
