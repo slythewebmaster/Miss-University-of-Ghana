@@ -1,84 +1,44 @@
-import React, { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
-import { createClient } from "@supabase/supabase-js";
-import Confetti from "react-confetti";
-import toast, { Toaster } from "react-hot-toast";
-
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
-);
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Verify = () => {
-  const [searchParams] = useSearchParams();
-  const reference = searchParams.get("reference");
-  const [status, setStatus] = useState("verifying");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const verifyPayment = async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const reference = urlParams.get("reference");
+      const formData = localStorage.getItem("mug_registration");
+
+      if (!reference || !formData) {
+        navigate("/payment-status?status=failed");
+        return;
+      }
+
       try {
-        const res = await fetch("/api/verify", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ reference }),
+        const query = new URLSearchParams({
+          reference,
+          data: encodeURIComponent(formData),
         });
 
-        const data = await res.json();
-
-        if (data.status === "success") {
-          const { error } = await supabase
-            .from("registrations")
-            .update({ paymentStatus: "Paid" })
-            .eq("paystackRef", reference);
-
-          if (error) {
-            console.error("Supabase update error:", error);
-            toast.error("Payment confirmed but failed to update status.");
-            setStatus("error");
-          } else {
-            setStatus("success");
-          }
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/verify?${query}`);
+        if (response.redirected) {
+          window.location.href = response.url;
         } else {
-          setStatus("failed");
+          const result = await response.json();
+          console.log("Verification response:", result);
+          navigate("/payment-status?status=failed");
         }
-      } catch (err) {
-        console.error("Verification error:", err);
-        setStatus("error");
+      } catch (error) {
+        console.error("Verification failed:", error);
+        navigate("/payment-status?status=failed");
       }
     };
 
-    if (reference) verifyPayment();
-    else setStatus("error");
-  }, [reference]);
+    verifyPayment();
+  }, [navigate]);
 
-  return (
-    <div className="verify-container">
-      <Toaster />
-      {status === "verifying" && <h2>Verifying your payment...</h2>}
-
-      {status === "success" && (
-        <>
-          <Confetti />
-          <h2>🎉 Registration Successful!</h2>
-          <p>Thank you for registering. We’ve received your payment.</p>
-        </>
-      )}
-
-      {status === "failed" && (
-        <>
-          <h2>Payment Not Verified</h2>
-          <p>We couldn’t confirm your payment. Please contact support.</p>
-        </>
-      )}
-
-      {status === "error" && (
-        <>
-          <h2>Something went wrong</h2>
-          <p>Please try again or contact support.</p>
-        </>
-      )}
-    </div>
-  );
+  return <div className="loading">Verifying payment, please wait...</div>;
 };
 
 export default Verify;

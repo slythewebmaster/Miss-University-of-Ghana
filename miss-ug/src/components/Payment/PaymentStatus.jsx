@@ -1,40 +1,43 @@
 import React, { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
-import toast, { Toaster } from "react-hot-toast";
+import Confetti from "react-confetti";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const PaymentStatus = () => {
-  const [searchParams] = useSearchParams();
-  const reference = searchParams.get("reference");
-  const [status, setStatus] = useState("Verifying...");
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [status, setStatus] = useState(null);
+  const [showConfetti, setShowConfetti] = useState(false);
 
   useEffect(() => {
-    const verifyPayment = async () => {
-      try {
-        const res = await fetch("/api/verify", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ reference }),
-        });
+    const params = new URLSearchParams(location.search);
+    const paymentStatus = params.get("status");
+    setStatus(paymentStatus);
 
-        const result = await res.json();
-
-        if (res.ok) {
-          setStatus("Payment successful. Your registration is confirmed!");
-        } else {
-          setStatus("Payment not verified. Please contact support.");
-        }
-      } catch (err) {
-        setStatus("An error occurred during verification.");
-      }
-    };
-
-    if (reference) verifyPayment();
-  }, [reference]);
+    if (paymentStatus === "success") {
+      setShowConfetti(true);
+      setTimeout(() => setShowConfetti(false), 8000); // Confetti lasts 8s
+    }
+  }, [location]);
 
   return (
-    <div className="status-page">
-      <Toaster />
-      <h1>{status}</h1>
+    <div className="status-container">
+      {showConfetti && <Confetti />}
+
+      <div className="status-box">
+        {status === "success" ? (
+          <>
+            <h2>🎉 Payment Successful!</h2>
+            <p>Thank you for registering for Miss University of Ghana!</p>
+            <button onClick={() => navigate("/")}>Go Home</button>
+          </>
+        ) : (
+          <>
+            <h2>❌ Payment Failed</h2>
+            <p>Something went wrong. Please try again.</p>
+            <button onClick={() => navigate("/register")}>Try Again</button>
+          </>
+        )}
+      </div>
     </div>
   );
 };
