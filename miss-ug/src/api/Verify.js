@@ -1,4 +1,4 @@
-// api/verify.js
+// /api/verify.js
 import axios from "axios";
 import { createClient } from "@supabase/supabase-js";
 
@@ -19,7 +19,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const response = await axios.get(
+    const { data: verifyRes } = await axios.get(
       `https://api.paystack.co/transaction/verify/${reference}`,
       {
         headers: {
@@ -28,19 +28,19 @@ export default async function handler(req, res) {
       }
     );
 
-    const data = response.data.data;
+    const status = verifyRes?.data?.data?.status;
 
-    if (data.status === "success") {
+    if (status === "success") {
       const { error } = await supabase
         .from("registrations")
         .update({ paymentStatus: "Success" })
         .eq("paystackRef", reference);
 
       if (error) {
-        return res.status(500).json({ message: "Supabase update failed" });
+        return res.status(500).json({ message: "Supabase update failed", error });
       }
 
-      return res.status(200).json({ message: "Payment verified and saved." });
+      return res.status(200).json({ message: "Payment verified and recorded." });
     } else {
       return res.status(400).json({ message: "Payment not successful" });
     }

@@ -2,10 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { createClient } from "@supabase/supabase-js";
 import Confetti from "react-confetti";
-import { useWindowSize } from "react-use";
 import toast, { Toaster } from "react-hot-toast";
 
-// Supabase setup
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
   import.meta.env.VITE_SUPABASE_ANON_KEY
@@ -14,64 +12,73 @@ const supabase = createClient(
 const Verify = () => {
   const [searchParams] = useSearchParams();
   const reference = searchParams.get("reference");
-  const { width, height } = useWindowSize();
-  const [status, setStatus] = useState("Verifying...");
+  const [status, setStatus] = useState("verifying");
 
   useEffect(() => {
     const verifyPayment = async () => {
-      if (!reference) {
-        setStatus("Invalid payment reference.");
-        return;
+      try {
+        const res = await fetch("/api/verify", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ reference }),
+        });
+
+        const data = await res.json();
+
+        if (data.status === "success") {
+          const { error } = await supabase
+            .from("registrations")
+            .update({ paymentStatus: "Paid" })
+            .eq("paystackRef", reference);
+
+          if (error) {
+            console.error("Supabase update error:", error);
+            toast.error("Payment confirmed but failed to update status.");
+            setStatus("error");
+          } else {
+            setStatus("success");
+          }
+        } else {
+          setStatus("failed");
+        }
+      } catch (err) {
+        console.error("Verification error:", err);
+        setStatus("error");
       }
-
-      // 1. Check if reference exists
-      const { data, error } = await supabase
-        .from("registrations")
-        .select("*")
-        .eq("paystackRef", reference)
-        .single();
-
-      if (error || !data) {
-        console.error(error);
-        setStatus("Reference not found.");
-        return;
-      }
-
-      // Optional: Confirm with Paystack backend API
-      // You can skip this if you're just trusting the hosted link flow.
-
-      // 2. Update status to 'Success'
-      const { error: updateError } = await supabase
-        .from("registrations")
-        .update({ paymentStatus: "Success" })
-        .eq("paystackRef", reference);
-
-      if (updateError) {
-        setStatus("Verification failed. Try again.");
-        console.error(updateError);
-        return;
-      }
-
-      setStatus("Payment verified successfully 🎉");
     };
 
-    verifyPayment();
+    if (reference) verifyPayment();
+    else setStatus("error");
   }, [reference]);
 
   return (
     <div className="verify-container">
       <Toaster />
-      {status.includes("successfully") && <Confetti width={width} height={height} />}
-      <h1>{status}</h1>
-      {status.includes("successfully") && <p>You are now fully registered. We’ll contact you soon!</p>}
+      {status === "verifying" && <h2>Verifying your payment...</h2>}
+
+      {status === "success" && (
+        <>
+          <Confetti />
+          <h2>🎉 Registration Successful!</h2>
+          <p>Thank you for registering. We’ve received your payment.</p>
+        </>
+      )}
+
+      {status === "failed" && (
+        <>
+          <h2>Payment Not Verified</h2>
+          <p>We couldn’t confirm your payment. Please contact support.</p>
+        </>
+      )}
+
+      {status === "error" && (
+        <>
+          <h2>Something went wrong</h2>
+          <p>Please try again or contact support.</p>
+        </>
+      )}
     </div>
   );
 };
-
-await fetch("https://missuniversityofghana.vercel.app/api/verify", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ reference }),
-});
 
 export default Verify;
