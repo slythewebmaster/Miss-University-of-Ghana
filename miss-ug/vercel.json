@@ -1,12 +1,36 @@
 {
-  "version": 2,
-  "builds": [
+  "rewrites": [
     {
-      "src": "miss-ug/package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "miss-ug"
-      }
+      "source": "/verify",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/payment-status",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/admin",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/admin-dashboard",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/details",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/become-a-partner",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/AboutSection",
+      "destination": "/index.html"
     }
   ],
+  "cleanUrls": true,
+  "redirects": [],
+  "headers": [],
+  "trailingSlash": false
 }
