@@ -1,11 +1,12 @@
 {
   "version": 2,
   "builds": [
-    { "src": "api/verify.js", "use": "@vercel/node" },
-    { "src": "index.html", "use": "@vercel/static" }
+    {
+      "src": "miss-ug/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "miss-ug"
+      }
+    }
   ],
-  "routes": [
-    { "src": "/api/verify", "dest": "/api/verify.js" },
-    { "src": "/(.*)", "dest": "/index.html" }
-  ]
 }

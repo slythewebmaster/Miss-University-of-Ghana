@@ -11,7 +11,7 @@ import LegacySection from './components/LegacySection/LegacySection';
 import About from './components/About/About';
 import AboutSection from './components/AboutSection/AboutSection';
 import Register from './components/Register/register';
-import Verify from './components/Register/verify';
+import Verify from './components/Register/Verify';
 import PaymentStatus from './components/Payment/PaymentStatus';
 import SponsorSection from './components/SponsorSection/SponsorSection';
 import BecomePartner from './components/BecomePartner/BecomePartner';
