@@ -1,4 +1,3 @@
-// pages/Register.jsx
 import React, { useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 import toast, { Toaster } from "react-hot-toast";
@@ -51,7 +50,6 @@ const Register = () => {
     setLoading(true);
     const reference = `MUG-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 
-    // Save to Supabase with paymentStatus: "Pending"
     const { error } = await supabase.from("registrations").insert([
       {
         ...formData,
@@ -67,7 +65,6 @@ const Register = () => {
       return;
     }
 
-    // Save reference to localStorage for use on /verify
     localStorage.setItem("reference", reference);
     const payUrl = `https://paystack.com/pay/4m6zuf1dtq?email=${formData.email}&reference=${reference}`;
     window.location.href = payUrl;
@@ -79,9 +76,17 @@ const Register = () => {
       <h2 className="title">Miss University of Ghana Registration</h2>
       <form onSubmit={handleSubmit} className="registration-form">
         {renderFields(formData, handleChange, errors, loading)}
-        <ReCAPTCHA sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY} onChange={() => setCaptchaValid(true)} />
-        <button type="submit" disabled={loading}>
-          {loading ? "Submitting..." : "Proceed to Pay ₵50"}
+        <div className="captcha">
+          <ReCAPTCHA sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY} onChange={() => setCaptchaValid(true)} />
+        </div>
+        <button type="submit" className="proceed-button" disabled={loading}>
+          {loading ? (
+            <span className="spinner"></span>
+          ) : (
+            <>
+              Proceed to Pay ₵50 <span>&rarr;</span>
+            </>
+          )}
         </button>
       </form>
     </motion.div>
