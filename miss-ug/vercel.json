@@ -1,8 +1,6 @@
 {
   "version": 2,
   "builds": [
-    { "src": "api/verify.js", "use": "@vercel/node" },
-    { "src": "dist/**", "use": "@vercel/static" }
   ],
   "routes": [
     { "src": "/api/verify", "dest": "/api/verify.js" },
