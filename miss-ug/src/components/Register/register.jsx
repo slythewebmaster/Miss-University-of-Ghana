@@ -24,6 +24,7 @@ const Register = () => {
   });
 
   const [errors, setErrors] = useState({});
+  const [photoFile, setPhotoFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [captchaValid, setCaptchaValid] = useState(false);
 
@@ -33,11 +34,16 @@ const Register = () => {
     setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
+  const handleFileChange = (e) => {
+    setPhotoFile(e.target.files[0]);
+  };
+
   const validate = () => {
     const err = {};
     for (const [key, value] of Object.entries(formData)) {
       if (!value.trim()) err[key] = "Required";
     }
+    if (!photoFile) err["photo"] = "Photo is required.";
     setErrors(err);
     return Object.keys(err).length === 0;
   };
@@ -50,9 +56,32 @@ const Register = () => {
     setLoading(true);
     const reference = `MUG-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 
+    // Upload photo to Supabase Storage
+    const fileExt = photoFile.name.split(".").pop();
+    const filePath = `registrations/${reference}.${fileExt}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from("pageant-photos")
+      .upload(filePath, photoFile);
+
+    if (uploadError) {
+      console.error(uploadError);
+      toast.error("Photo upload failed.");
+      setLoading(false);
+      return;
+    }
+
+    const { data: publicURLData } = supabase.storage
+      .from("pageant-photos")
+      .getPublicUrl(filePath);
+
+    const photoUrl = publicURLData.publicUrl;
+
     const { error } = await supabase.from("registrations").insert([
       {
         ...formData,
+        photoUrl,
+        formId: reference,
         paymentStatus: "Pending",
         paystackRef: reference,
       },
@@ -65,7 +94,9 @@ const Register = () => {
       return;
     }
 
+    toast.success(`Registration complete. Your Form ID: ${reference}`);
     localStorage.setItem("reference", reference);
+
     const payUrl = `https://paystack.com/pay/4m6zuf1dtq?email=${formData.email}&reference=${reference}`;
     window.location.href = payUrl;
   };
@@ -76,6 +107,11 @@ const Register = () => {
       <h2 className="title">Miss University of Ghana Registration</h2>
       <form onSubmit={handleSubmit} className="registration-form">
         {renderFields(formData, handleChange, errors, loading)}
+        <div>
+          <label>Upload Headshot (JPEG/PNG)</label>
+          <input type="file" accept="image/*" onChange={handleFileChange} disabled={loading} />
+          {errors["photo"] && <small className="error-text">{errors["photo"]}</small>}
+        </div>
         <div className="captcha">
           <ReCAPTCHA sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY} onChange={() => setCaptchaValid(true)} />
         </div>
