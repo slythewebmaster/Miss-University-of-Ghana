@@ -1,41 +1,7 @@
 {
   "rewrites": [
-    {
-      "source": "/verify",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/payment-status",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/admin",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/admin-dashboard",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/details",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/become-a-partner",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/AboutSection",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
-  ],
-  "cleanUrls": true,
-  "redirects": [],
-  "headers": [],
-  "trailingSlash": false
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
 }
+
 
