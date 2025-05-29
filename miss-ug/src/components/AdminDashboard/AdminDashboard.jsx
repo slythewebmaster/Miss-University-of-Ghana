@@ -5,7 +5,7 @@ import './AdminDashboard.css';
 
 const AdminDashboard = () => {
   const [user, setUser] = useState(null);
-  const [applicants, setApplicants] = useState([]);
+  const [registrations, setRegistrations] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -23,23 +23,23 @@ const AdminDashboard = () => {
   }, [navigate]);
 
   useEffect(() => {
-    const fetchApplicants = async () => {
+    const fetchRegistrations = async () => {
       const { data, error } = await supabase
-        .from('applicants')
+        .from('registrations')
         .select('*')
         .order('created_at', { ascending: false });
 
       if (error) {
-        console.error('Error fetching applicants:', error.message);
+        console.error('Error fetching registrations:', error.message);
       } else {
-        setApplicants(data || []);
+        setRegistrations(data || []);
       }
 
       setLoading(false);
     };
 
     if (user) {
-      fetchApplicants();
+      fetchRegistrations();
     }
   }, [user]);
 
@@ -72,14 +72,14 @@ const AdminDashboard = () => {
 
         <div className="stats">
           <div className="stat-card">
-            <h4>Total Applicants</h4>
-            <p>{applicants.length}</p>
+            <h4>Total Registrations</h4>
+            <p>{registrations.length}</p>
           </div>
           <div className="stat-card">
             <h4>New This Month</h4>
             <p>{
-              applicants.filter(applicant => {
-                const date = new Date(applicant.created_at);
+              registrations.filter(reg => {
+                const date = new Date(reg.created_at);
                 const now = new Date();
                 return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
               }).length
@@ -87,11 +87,11 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        <h2>Applicants</h2>
+        <h2>Registrations</h2>
 
         {loading ? (
-          <p>Loading applicants...</p>
-        ) : applicants.length > 0 ? (
+          <p>Loading registrations...</p>
+        ) : registrations.length > 0 ? (
           <table className="applicants-table">
             <thead>
               <tr>
@@ -102,22 +102,22 @@ const AdminDashboard = () => {
               </tr>
             </thead>
             <tbody>
-              {applicants.map(applicant => (
+              {registrations.map(reg => (
                 <tr
-                  key={applicant.id}
-                  onClick={() => navigate(`/admin/applicant/${applicant.id}`)}
+                  key={reg.id || `${reg.email}-${reg.created_at}`}
+                  onClick={() => navigate(`/admin/applicant/${reg.id}`)}
                   className="clickable-row"
                 >
-                  <td>{applicant.full_name}</td>
-                  <td>{applicant.email}</td>
-                  <td>{applicant.phone}</td>
-                  <td>{new Date(applicant.created_at).toLocaleString()}</td>
+                  <td>{reg.name}</td>
+                  <td>{reg.email}</td>
+                  <td>{reg.phone}</td>
+                  <td>{new Date(reg.created_at).toLocaleString()}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         ) : (
-          <p>No applicants found.</p>
+          <p>No registrations found.</p>
         )}
       </main>
     </div>

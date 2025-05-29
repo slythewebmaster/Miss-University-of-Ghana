@@ -12,7 +12,7 @@ const ApplicantDetails = () => {
   useEffect(() => {
     const fetchApplicant = async () => {
       const { data, error } = await supabase
-        .from('applicants')
+        .from('registrations')
         .select('*')
         .eq('id', id)
         .single();
@@ -47,11 +47,18 @@ const ApplicantDetails = () => {
         <h1>Applicant Details</h1>
 
         <div className="faq">
-          <p><strong>Full Name:</strong> {applicant.full_name}</p>
+          <p><strong>Name:</strong> {applicant.name}</p>
+          <p><strong>Age:</strong> {applicant.age}</p>
+          <p><strong>Gender:</strong> {applicant.gender}</p>
           <p><strong>Email:</strong> {applicant.email}</p>
           <p><strong>Phone:</strong> {applicant.phone}</p>
+          <p><strong>Hall:</strong> {applicant.hall}</p>
+          <p><strong>Program:</strong> {applicant.program}</p>
+          <p><strong>Inspiration:</strong> {applicant.inspiration}</p>
+          <p><strong>Unique Introduction:</strong> {applicant.uniqueIntro}</p>
+          <p><strong>Payment Status:</strong> {applicant.paymentStatus}</p>
+          <p><strong>Paystack Reference:</strong> {applicant.paystackRef}</p>
           <p><strong>Registered On:</strong> {new Date(applicant.created_at).toLocaleString()}</p>
-          {/* You can add more fields if you have e.g. age, gender, etc */}
         </div>
       </main>
     </div>
