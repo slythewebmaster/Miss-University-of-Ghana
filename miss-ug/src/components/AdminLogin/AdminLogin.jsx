@@ -11,7 +11,7 @@ const AdminLogin = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
-  const [loading, setLoading] = useState(false); // 🆕 Added loading state
+  const [loading, setLoading] = useState(false);
 
   const handleAuth = async (e) => {
     e.preventDefault();
