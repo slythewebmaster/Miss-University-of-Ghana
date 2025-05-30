@@ -4,94 +4,145 @@ import { supabase } from '../../supabaseClient';
 import './AdminDashboard.css';
 
 const AdminDashboard = () => {
+  const [user, setUser] = useState(null);
   const [registrations, setRegistrations] = useState([]);
+  const [filtered, setFiltered] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('All');
   const navigate = useNavigate();
 
   useEffect(() => {
+    const getUser = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user && session.user.user_metadata?.role === 'admin') {
+        setUser(session.user);
+      } else {
+        navigate('/admin');
+      }
+    };
+    getUser();
+  }, [navigate]);
+
+  useEffect(() => {
     const fetchRegistrations = async () => {
-      let query = supabase.from('registrations').select('*').order('created_at', { ascending: false });
-
-      if (filter === 'Paid') query = query.eq('paymentStatus', 'Paid');
-      if (filter === 'Unpaid') query = query.eq('paymentStatus', 'Unpaid');
-
-      const { data, error } = await query;
+      const { data, error } = await supabase
+        .from('registrations')
+        .select('*')
+        .order('created_at', { ascending: false });
 
       if (error) {
-        console.error('Error fetching registrations:', error.message);
+        console.error('Fetch error:', error.message);
       } else {
-        setRegistrations(data || []);
+        setRegistrations(data);
+        setFiltered(data);
       }
       setLoading(false);
     };
 
-    fetchRegistrations();
-  }, [filter]);
+    if (user) fetchRegistrations();
+  }, [user]);
 
-  const getFilteredCount = (status) => registrations.filter(r => r.paymentStatus === status).length;
+  const handleFilterChange = (status) => {
+    setFilter(status);
+    if (status === 'All') {
+      setFiltered(registrations);
+    } else {
+      setFiltered(registrations.filter(r => r.paymentStatus === status));
+    }
+  };
+
+  const adminName = user?.user_metadata?.full_name || 'Admin';
 
   return (
-    <div className="admin-container">
-      <aside className="sidebar">
-        <div className="logo">Pageant Admin</div>
-        <nav className="nav-links">
-          <button className="nav-button active">Dashboard</button>
-        </nav>
+    <div className="admin-dark">
+      <aside className="sidebar-dark">
+        <div className="logo-dark">Admin</div>
+        <div className="admin-meta">
+          <img
+            src="https://img.freepik.com/premium-vector/anime-cartoon-character-vector-illustration_648489-34.jpg"
+            className="admin-avatar"
+            alt="Admin"
+          />
+          <p>{adminName}</p>
+        </div>
+        <button className="nav-button-dark" onClick={() => navigate('/admin')}>Dashboard</button>
+        <button className="nav-button-dark" onClick={async () => {
+          await supabase.auth.signOut();
+          navigate('/admin');
+        }}>Logout</button>
       </aside>
 
-      <main className="dashboard-main">
-        <div className="dashboard-header">
-          <h1 className="dashboard-title">Applicant Dashboard</h1>
-          <div className="filter-group">
-            <select value={filter} onChange={e => setFilter(e.target.value)} className="filter-select">
-              <option value="All">All</option>
-              <option value="Paid">Paid</option>
-              <option value="Unpaid">Unpaid</option>
-            </select>
-          </div>
-        </div>
-
-        <div className="stats">
-          <div className="stat-card">
-            <h4>Total</h4>
-            <p>{registrations.length}</p>
-          </div>
-          <div className="stat-card">
-            <h4>Paid</h4>
-            <p>{getFilteredCount('Paid')}</p>
-          </div>
-          <div className="stat-card">
-            <h4>Unpaid</h4>
-            <p>{getFilteredCount('Unpaid')}</p>
-          </div>
-        </div>
+      <main className="dashboard-dark">
+        <h1>Dashboard Overview</h1>
 
         {loading ? (
-          <p>Loading registrations...</p>
-        ) : registrations.length > 0 ? (
-          <div className="cards-grid">
-            {registrations.map(reg => (
-              <div
-                key={reg.id}
-                className="applicant-card"
-                onClick={() => navigate(`/admin/applicant/${reg.id}`)}
-              >
-                <img
-                  src={reg.photoUrl || 'https://via.placeholder.com/100'}
-                  alt={reg.name}
-                  className="applicant-photo"
-                />
-                <div className="applicant-info">
-                  <h4>{reg.name}</h4>
-                  <p>{reg.email}</p>
-                  <p>Status: <strong className={reg.paymentStatus === 'Paid' ? 'paid' : 'unpaid'}>{reg.paymentStatus}</strong></p>
-                </div>
-              </div>
-            ))}
-          </div>
+          <div className="spinner"></div>
         ) : (
-          <p>No registrations found.</p>
+          <>
+            <div className="dashboard-stats">
+              <div className="stat-box">
+                <h3>Total Applicants</h3>
+                <p>{registrations.length}</p>
+              </div>
+              <div className="stat-box">
+                <h3>Paid</h3>
+                <p>{registrations.filter(r => r.paymentStatus === 'Paid').length}</p>
+              </div>
+              <div className="stat-box">
+                <h3>Unpaid</h3>
+                <p>{registrations.filter(r => r.paymentStatus !== 'Paid').length}</p>
+              </div>
+            </div>
+
+            <div className="filter-bar">
+              {['All', 'Paid', 'Unpaid'].map(status => (
+                <button
+                  key={status}
+                  className={`filter-btn ${filter === status ? 'active' : ''}`}
+                  onClick={() => handleFilterChange(status)}
+                >
+                  {status}
+                </button>
+              ))}
+            </div>
+
+            <table className="dark-table">
+              <thead>
+                <tr>
+                  <th>Photo</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>Status</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filtered.map(applicant => (
+                  <tr
+                    key={applicant.id}
+                    onClick={() => navigate(`/admin/applicant/${applicant.id}`)}
+                    className="clickable-row"
+                  >
+                    <td>
+                      <img
+                        src={applicant.photo || 'https://via.placeholder.com/50'}
+                        alt={applicant.name}
+                        className="thumb"
+                      />
+                    </td>
+                    <td>{applicant.name}</td>
+                    <td>{applicant.email}</td>
+                    <td>{applicant.phone}</td>
+                    <td className={applicant.paymentStatus === 'Paid' ? 'paid' : 'unpaid'}>
+                      {applicant.paymentStatus}
+                    </td>
+                    <td>{new Date(applicant.created_at).toLocaleDateString()}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </>
         )}
       </main>
     </div>
