@@ -24,7 +24,6 @@ const Register = () => {
   });
 
   const [errors, setErrors] = useState({});
-  const [photoFile, setPhotoFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [captchaValid, setCaptchaValid] = useState(false);
 
@@ -34,16 +33,11 @@ const Register = () => {
     setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
-  const handleFileChange = (e) => {
-    setPhotoFile(e.target.files[0]);
-  };
-
   const validate = () => {
     const err = {};
     for (const [key, value] of Object.entries(formData)) {
       if (!value.trim()) err[key] = "Required";
     }
-    if (!photoFile) err["photo"] = "Photo is required.";
     setErrors(err);
     return Object.keys(err).length === 0;
   };
@@ -56,31 +50,9 @@ const Register = () => {
     setLoading(true);
     const reference = `MUG-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 
-    // Upload photo to Supabase Storage
-    const fileExt = photoFile.name.split(".").pop();
-    const filePath = `registrations/${reference}.${fileExt}`;
-
-    const { error: uploadError } = await supabase.storage
-      .from("pageant-photos")
-      .upload(filePath, photoFile);
-
-    if (uploadError) {
-      console.error(uploadError);
-      toast.error("Photo upload failed.");
-      setLoading(false);
-      return;
-    }
-
-    const { data: publicURLData } = supabase.storage
-      .from("pageant-photos")
-      .getPublicUrl(filePath);
-
-    const photoUrl = publicURLData.publicUrl;
-
     const { error } = await supabase.from("registrations").insert([
       {
         ...formData,
-        photoUrl,
         formId: reference,
         paymentStatus: "Pending",
         paystackRef: reference,
