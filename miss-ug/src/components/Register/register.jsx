@@ -107,11 +107,7 @@ const Register = () => {
       <h2 className="title">Miss University of Ghana Registration</h2>
       <form onSubmit={handleSubmit} className="registration-form">
         {renderFields(formData, handleChange, errors, loading)}
-        <div>
-          <label>Upload Headshot (JPEG/PNG)</label>
-          <input type="file" accept="image/*" onChange={handleFileChange} disabled={loading} />
-          {errors["photo"] && <small className="error-text">{errors["photo"]}</small>}
-        </div>
+        
         <div className="captcha">
           <ReCAPTCHA sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY} onChange={() => setCaptchaValid(true)} />
         </div>
