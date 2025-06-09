@@ -18,8 +18,9 @@
 
 .sponsor-heading {
   font-style: italic;
-  font-size: 1.25rem;
+  font-size: 4.25rem;
   color: black;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
 .sponsor-tagline {

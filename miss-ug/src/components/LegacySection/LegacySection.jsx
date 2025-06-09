@@ -4,7 +4,7 @@ import "./LegacySection.css";
 const images = [
   "https://i.pinimg.com/736x/cb/04/8a/cb048a57eae3877197480e7fd76ad6e6.jpg",
   "https://i.pinimg.com/736x/f1/59/ae/f159aea8712ebea863cc4ed9d1d28a0c.jpg",
-  "https://i.pinimg.com/736x/42/92/9e/42929e2a3155a05ddccfb56efbcb5ca7.jpg",
+  "https://i.pinimg.com/736x/45/f7/81/45f781f47213d828a498f242368d04b4.jpg",
   "https://i.pinimg.com/736x/73/75/60/737560827451931d3580588a5ca4e293.jpg"
 ];
 
