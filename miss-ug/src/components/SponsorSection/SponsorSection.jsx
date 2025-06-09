@@ -5,7 +5,9 @@ import "./SponsorSection.css";
 const sponsors = [
   { img: "https://i.pinimg.com/736x/26/a7/bc/26a7bce315c65ca6aac22dc50a7f9d2f.jpg" },
   { img: "https://i.pinimg.com/736x/cf/56/7e/cf567e10b5a03533207799da995b1954.jpg" },
+  { img: "https://i.pinimg.com/736x/08/10/0b/08100b6c37339eefc10a5175de62a42e.jpg" },
   { img: "https://i.pinimg.com/736x/39/72/a2/3972a24854006ceadd4bb970cfb3921b.jpg" },
+  { img: "https://i.pinimg.com/736x/8b/4f/07/8b4f07f562e4c3c83e10e3f2471a3f5b.jpg" },
   { img: "https://i.pinimg.com/736x/ae/fa/d8/aefad881ad1995e5150c170da5daa666.jpg" },
 ];
 
