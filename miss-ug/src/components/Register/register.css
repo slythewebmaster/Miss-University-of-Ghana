@@ -24,7 +24,17 @@
   flex-direction: column;
   gap: 1.2rem;
 }
-
+.support-text{
+text-align: center;
+  margin-top: 1rem;
+  font-size: 1rem;
+  color: #f8f8f8;
+}
+.note {
+  text-align: center;
+  margin-top: auto;
+  font-size: 1.1rem;
+}
 /* Labels */
 .registration-form label {
   display: block;

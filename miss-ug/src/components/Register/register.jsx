@@ -93,6 +93,13 @@ const Register = () => {
           {loading ? <span className="spinner"></span> : <>Proceed to Pay ₵50 <span>&rarr;</span></>}
         </button>
       </form>
+      <p className="support-text">
+          Having issues with the website? Contact us: <strong>0248347961</strong>
+          </p>
+           <p className="note">
+          Agree to the <a href="/terms" target="_blank" rel="noopener noreferrer">Terms and Conditions</a>.
+        </p>
+
     </motion.div>
   );
 };
