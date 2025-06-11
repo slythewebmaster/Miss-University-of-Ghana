@@ -66,11 +66,15 @@ const Register = () => {
       return;
     }
 
-    toast.success(`Registration complete. Your Form ID: ${reference}`);
     localStorage.setItem("reference", reference);
+    localStorage.setItem("email", formData.email);
+    toast.success("Saved! Redirecting to Paystack...");
 
-    const payUrl = `https://paystack.com/pay/4m6zuf1dtq?email=${formData.email}&reference=${reference}`;
-    window.location.href = payUrl;
+    // Redirect using JS safely
+    setTimeout(() => {
+      const payUrl = `https://paystack.com/pay/4m6zuf1dtq?email=${formData.email}&reference=${reference}`;
+      window.location.assign(payUrl);
+    }, 2000);
   };
 
   return (
@@ -79,18 +83,14 @@ const Register = () => {
       <h2 className="title">Miss University of Ghana Registration</h2>
       <form onSubmit={handleSubmit} className="registration-form">
         {renderFields(formData, handleChange, errors, loading)}
-        
         <div className="captcha">
-          <ReCAPTCHA sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY} onChange={() => setCaptchaValid(true)} />
+          <ReCAPTCHA
+            sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
+            onChange={() => setCaptchaValid(true)}
+          />
         </div>
         <button type="submit" className="proceed-button" disabled={loading}>
-          {loading ? (
-            <span className="spinner"></span>
-          ) : (
-            <>
-              Proceed to Pay ₵50 <span>&rarr;</span>
-            </>
-          )}
+          {loading ? <span className="spinner"></span> : <>Proceed to Pay ₵50 <span>&rarr;</span></>}
         </button>
       </form>
     </motion.div>
